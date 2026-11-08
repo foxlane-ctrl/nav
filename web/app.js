@@ -277,6 +277,7 @@ var pondEnabled = false, pondRunning = false;
       x: Math.random() * W * 0.8 + W * 0.1,
       y: Math.random() * H * 0.8 + H * 0.1,
       heading: Math.random() * Math.PI * 2,
+      dir: 1, lane: 0, // dir/lane 只在桌面（W>=700）的规划游动里用，手机保持原来的随机游动
       speed: 16 + Math.random() * 10,
       curSpeed: 0,
       mood: 'cruise', moodUntil: 4 + Math.random() * 8,
@@ -300,16 +301,43 @@ var pondEnabled = false, pondRunning = false;
 
   var fish = [];
   function wantCount() { return W < 700 ? 3 : 5; }
+  // 每条鱼一条泳道：泳道按深度均匀排开（0.14H–0.86H），鱼只在自己的泳道里游，互相不挤
+  function laneY(lane, n) {
+    if (!n || n < 1) n = 1;
+    return H * (0.14 + 0.72 * ((lane || 0) + 0.5) / n);
+  }
+  function assignLanes() {
+    fish.forEach(function (f, i) { f.lane = i; });
+  }
   function seed() {
     fish = [];
     var n = wantCount();
     for (var i = 0; i < n; i++) fish.push(makeFish(i + 1, false));
+    assignLanes();
+    // 桌面：出生就分开站位 — 每条鱼在自己的泳道里，x 错开、游向交替，不扎堆
+    if (W >= 700) {
+      for (var j = 0; j < fish.length; j++) {
+        var f = fish[j];
+        f.dir = (j % 2 === 0) ? 1 : -1;
+        f.heading = f.dir > 0 ? 0 : Math.PI;
+        f.x = W * (0.12 + 0.76 * ((j * 0.618) % 1));
+        f.y = laneY(j, fish.length);
+      }
+    }
   }
   seed();
   window.addEventListener('resize', function () {
     var n = wantCount();
     while (fish.length < n) fish.push(makeFish(fish.length + 1, true));
     while (fish.length > n) fish.pop();
+    assignLanes();
+    // 桌面窗口尺寸变了：新补的鱼也进自己的泳道（从边缘游进来，游向按泳道交替）
+    if (W >= 700) {
+      for (var j = 0; j < fish.length; j++) {
+        var f = fish[j];
+        if (f.dir === undefined) f.dir = (j % 2 === 0) ? 1 : -1;
+      }
+    }
   });
 
   // 荷叶：3 片，固定位置附近极慢地漂，带缺口，其中一片上有一朵小花；内容区下方变淡
@@ -484,16 +512,30 @@ var pondEnabled = false, pondRunning = false;
 
   function step(f, dt, now) {
     if (now > f.moodUntil) pickMood(f, now);
-    // 靠近边缘时温柔地转向池中央，不穿墙、不瞬移
-    var margin = 140;
-    var nearEdge = f.x < margin || f.x > W - margin || f.y < margin || f.y > H - margin;
-    var targetHeading = f.heading + (Math.random() - 0.5) * 0.35 * dt;
-    if (nearEdge) {
-      var toCentre = Math.atan2(H / 2 - f.y, W / 2 - f.x);
-      var dc = toCentre - f.heading;
-      while (dc > Math.PI) dc -= Math.PI * 2;
-      while (dc < -Math.PI) dc += Math.PI * 2;
-      targetHeading = f.heading + dc * Math.min(1, dt * 1.5);
+    // 心情只管快慢（rest 慢游、explore 快游），方向由泳道管
+    var targetHeading;
+    if (W >= 700) {
+      // 桌面：规划游动 — 沿自己的泳道横游，偏离泳道就温柔地游回去，
+      // 到池边就掉头（方向交替），再加一点正弦摆动，看起来是活的不是机械的
+      var ly = laneY(f.lane, fish.length);
+      var margin = 140;
+      if (f.dir === undefined) f.dir = 1;
+      if (f.x < margin && f.dir < 0) f.dir = 1;
+      else if (f.x > W - margin && f.dir > 0) f.dir = -1;
+      var dy = ly - f.y;
+      targetHeading = Math.atan2(dy * 0.6, f.dir * 200) + Math.sin(now * 0.6 + f.phase) * 0.12;
+    } else {
+      // 手机：保持原来的随机游动，不动
+      var margin = 140;
+      var nearEdge = f.x < margin || f.x > W - margin || f.y < margin || f.y > H - margin;
+      targetHeading = f.heading + (Math.random() - 0.5) * 0.35 * dt;
+      if (nearEdge) {
+        var toCentre = Math.atan2(H / 2 - f.y, W / 2 - f.x);
+        var dc = toCentre - f.heading;
+        while (dc > Math.PI) dc -= Math.PI * 2;
+        while (dc < -Math.PI) dc += Math.PI * 2;
+        targetHeading = f.heading + dc * Math.min(1, dt * 1.5);
+      }
     }
     // 转向限速：大鱼不能原地掉头
     var diff = targetHeading - f.heading;
