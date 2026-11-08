@@ -1,0 +1,62 @@
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#0b0e14;color:#e6e9f0;font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif;min-height:100vh}
+a{color:inherit;text-decoration:none}
+.layout{display:flex;min-height:100vh}
+/* 左侧栏 */
+.sidebar{width:220px;flex-shrink:0;background:#11141d;border-right:1px solid #1e2330;padding:20px 12px;position:sticky;top:0;height:100vh;overflow-y:auto}
+.logo{font-size:20px;font-weight:700;padding:6px 10px 18px;color:#fff}
+.logo span{color:#f97316}
+.cat{display:flex;justify-content:space-between;align-items:center;padding:10px 12px;border-radius:10px;cursor:pointer;color:#aab0c0;font-size:15px}
+.cat:hover{background:#1a1f2e;color:#fff}
+.cat.active{background:#232838;color:#fff}
+.cat .count{background:#232838;color:#8b93a7;font-size:12px;padding:2px 8px;border-radius:20px}
+.cat.active .count{background:#f97316;color:#fff}
+.cat .del-cat{background:none;border:none;color:#6b7280;cursor:pointer;font-size:14px;padding:0 2px}
+.cat .del-cat:hover{color:#ef4444}
+/* 主区 */
+.main{flex:1;padding:28px 36px 60px;max-width:1100px}
+.clock{text-align:center;margin:18px 0 8px}
+.clock .time{font-size:52px;font-weight:600;letter-spacing:2px;color:#fff}
+.clock .date{font-size:14px;color:#8b93a7;margin-top:6px}
+.search{max-width:640px;margin:22px auto 34px;display:flex;background:#171b28;border:1px solid #262c3d;border-radius:14px;overflow:hidden}
+.search select{background:#171b28;color:#aab0c0;border:none;outline:none;padding:0 10px;font-size:14px}
+.search input{flex:1;background:transparent;border:none;outline:none;color:#fff;padding:15px 14px;font-size:16px}
+.search button{background:#f97316;color:#fff;border:none;padding:0 24px;font-size:15px;cursor:pointer}
+.search button:hover{background:#ea6a0a}
+section{margin-bottom:36px;scroll-margin-top:20px}
+section h2{font-size:17px;margin-bottom:16px;color:#fff}
+section h2 span{color:#8b93a7;font-size:13px;font-weight:400;margin-left:8px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(96px,1fr));gap:16px}
+.tile{position:relative;display:flex;flex-direction:column;align-items:center;gap:10px;padding:14px 6px;border-radius:14px;background:#141824;border:1px solid #1e2330}
+.tile:hover{background:#1b2132;border-color:#2a3145}
+.icon{width:64px;height:64px;border-radius:18px;display:flex;align-items:center;justify-content:center;font-size:26px;font-weight:700;color:#fff}
+.tile .name{font-size:13px;color:#c9cede;text-align:center;line-height:1.3;word-break:break-all}
+.empty{color:#6b7280;font-size:14px;padding:12px 4px}
+.foot{text-align:center;color:#5b6273;font-size:12px;margin-top:40px}
+/* 管理员 */
+.adminbar{display:flex;justify-content:flex-end;gap:8px;margin-bottom:8px}
+.adminbar button{background:#1a1f2e;color:#c9cede;border:1px solid #262c3d;border-radius:8px;padding:7px 12px;font-size:13px;cursor:pointer}
+.adminbar button:hover{border-color:#f97316;color:#fff}
+.adminbar button.primary{background:#f97316;color:#fff;border-color:#f97316}
+.adminbar button.primary:hover{background:#ea6a0a}
+.tile .ops{position:absolute;top:4px;right:4px;display:flex;gap:2px}
+.tile .ops button{background:rgba(11,14,20,.8);color:#aab0c0;border:1px solid #2a3145;border-radius:6px;width:20px;height:20px;font-size:11px;cursor:pointer;line-height:1}
+.tile .ops button:hover{color:#fff;border-color:#f97316}
+.modal{position:fixed;inset:0;background:rgba(0,0,0,.6);display:none;align-items:center;justify-content:center;z-index:10}
+.modal.open{display:flex}
+.modal .box{background:#171b28;border:1px solid #262c3d;border-radius:14px;padding:24px;width:340px;max-width:92vw}
+.modal .box h3{margin-bottom:16px;font-size:17px}
+.modal .box label{display:block;font-size:13px;color:#8b93a7;margin:12px 0 4px}
+.modal .box input,.modal .box select{width:100%;background:#0b0e14;border:1px solid #262c3d;border-radius:8px;color:#fff;padding:10px;font-size:14px;outline:none}
+.modal .box .row{display:flex;gap:8px;margin-top:18px}
+.modal .box .row button{flex:1;background:#f97316;color:#fff;border:none;border-radius:8px;padding:10px;font-size:14px;cursor:pointer}
+.modal .box .row button.ghost{background:#1a1f2e;color:#c9cede}
+.err{color:#ef4444;font-size:13px;margin-top:10px;min-height:16px}
+@media (max-width:760px){
+  .layout{flex-direction:column}
+  .sidebar{width:100%;height:auto;position:static;display:flex;overflow-x:auto;gap:4px;padding:10px}
+  .logo{white-space:nowrap;padding:10px}
+  .cat{white-space:nowrap}
+  .main{padding:16px}
+  .clock .time{font-size:40px}
+}
