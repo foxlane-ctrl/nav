@@ -57,6 +57,18 @@ bash update.sh
 
 如果 GitHub 拉不到，它会报错退出，不会悄悄保留旧版当更新成功。
 
+## 2.5 绑定域名：`bash bind-domain-nginx.sh`（一键绑定 nav.greystack.dev）
+
+域名在 Sav 买的，解析也在 Sav 里做：A 记录，名称 `nav`，内容 `107.175.132.20`，代理关。加完等几分钟、确认解析到了再跑：
+
+```bash
+bash bind-domain-nginx.sh
+```
+
+脚本会：检查导航站和 nginx 容器在跑、检查 DNS 已指向本机、找出 nginx 容器的配置挂载位置、往 nginx 里加一个 `nav.greystack.dev` 的反代配置（到本机 8080）、检查 HTTP 能打开、有 acme.sh 或 certbot 就申请证书并加上 443 配置、检查 HTTPS 能打开。
+
+**注意：不要跑旧的 `bind-domain.sh`（Caddy 版），它已经被废弃了。** 80/443 端口早被一个 nginx 容器（给探针 komari.greystack.dev 做反代，跑了几个月）占着，Caddy 再起一个容器抢端口一定失败，旧脚本就是这么停住的。新脚本不碰 nginx、不停探针，只往 nginx 里加一条 nav 的配置；探针的 `komari.greystack.dev.conf`、证书一个字都不动。如果机子上没有 acme.sh 或 certbot，脚本只绑 HTTP 就正常退出，不会自动装任何东西，想上 HTTPS 请装好其中一个再跑一次。
+
 ## 3. 以后怎么加链接
 
 打开导航站，点右上角「管理员登录」，登录后点「＋ 加链接」，填名字、网址、选分类，确定就行。改链接、删链接、加分类都在网页上点几下完成，改完立刻保存到 `data/data.json`，不用再跑更新脚本。
