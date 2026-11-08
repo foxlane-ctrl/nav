@@ -191,6 +191,8 @@ button{font:inherit}
 .chipbar__item.is-active{border-color:transparent;background:linear-gradient(135deg,var(--accent),var(--accent-2));color:var(--accent-contrast)}
 .tabs{display:flex;align-items:center;gap:6px;margin-bottom:18px;padding-bottom:10px;
   border-bottom:1px solid color-mix(in srgb,var(--border) 70%,transparent);overflow-x:auto;scrollbar-width:none}
+.tabs[hidden]{display:none}
+.page--tabs .chipbar{display:none}
 .tabs::-webkit-scrollbar{display:none}
 .tabs__item{flex-shrink:0;display:inline-flex;align-items:center;gap:6px;min-height:38px;padding:0 14px;
   border:1px solid var(--border);border-radius:999px;background:var(--surface);color:var(--text-sub);
