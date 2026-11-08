@@ -11,12 +11,12 @@
 GitHub 仓库：https://github.com/foxlane-ctrl/nav
 部署后地址：`http://你的服务器IP:8080`
 
-## 里面有什么（113 个链接）
+## 里面有什么（112 个链接）
 
-链接清单最初从原站公开接口 `https://nav.xiaoworks.com/api/v1/public/navigation` 拿的，之后按 Sean 的使用习惯重排过：AI 在最前面，Daily、常用、VPS 跟在后面。2026-11-08 的改动：删了朋友的 2 条探针（komari探针、极简探针），加了 Sean 自己的探针（我的探针 → https://komari.greystack.dev，Daily 第一位）：
+链接清单最初从原站公开接口 `https://nav.xiaoworks.com/api/v1/public/navigation` 拿的，之后按 Sean 的使用习惯重排过：AI 在最前面，Daily、常用、VPS 跟在后面。2026-11-08 的改动：删了朋友的 2 条探针（komari探针、极简探针），加了 Sean 自己的探针（我的探针 → https://komari.greystack.dev，Daily 第一位）；2026-11-08 晚又删了朋友的博客（blog.xiaoworks.com，Sean 说他没有博客）：
 
 - AI & 智能（10 个）：ChatGPT、Gemini、Claude、Midjourney、DeepSeek、通义千问、kimi、Manus、Grok、Cursor（顶部 AI 快捷入口另有 Muse → https://muse.ai）
-- Daily（18 个）：我的探针、博客、个人主页、NodeSeek、烧饼论坛、cloudflare、ITDOG、优选IP、流量消耗器、大文件下载、tcp调优、节点一键脚本、肥羊订阅转换、订阅转换、各地延迟域名、免费图床、剩余价值计算器、地址生成器
+- Daily（17 个）：我的探针、个人主页、NodeSeek、烧饼论坛、cloudflare、ITDOG、优选IP、流量消耗器、大文件下载、tcp调优、节点一键脚本、肥羊订阅转换、订阅转换、各地延迟域名、免费图床、剩余价值计算器、地址生成器
 - 常用（7 个）：YouTube、GitHub、telegram、Netflix、Spotify、Bilibili、迪士尼+
 - VPS/云服务器（31 个）：datawave、Berohost、绿云 GreenCloud、小秘书 V.PS、RFC、DMIT(大妈)、搬瓦工、vmiss、Vmrack、bitsflow、nosla、Jtti、Akile、ReckNerd、谷歌云、甲骨文云、亚马逊云、ColoCrossing、gomami(狗妈)、Hosthatch、Zouter、Evoxt、华纳云、虫网、面包云、阿里云、腾讯云、华为云、莱卡云、优刻得、HytronVPS（海创）
 - SpeedTest（8 个）：speedtest、谷歌测速、Fast、cf测速、LibreSpeed、Measurementlab、IP+测速、speedtest单线程
@@ -85,10 +85,10 @@ go test ./...     # 跑测试
 go vet ./...      # 检查代码
 ```
 
-数据文件在 `data/data.json`（113 个链接，进 Git；第一次启动如果卷里没有，会用它做初始数据）。
+数据文件在 `data/data.json`（112 个链接，进 Git；第一次启动如果卷里没有，会用它做初始数据）。
 
-更新时如果卷里还是旧版数据（21 条初始数据、111 条带推广参数版、111 条带朋友探针版、110 条带朋友探针版、110 条 Sean's Nav 旧版），`update.sh` / `deploy.sh` 会自动把它换成 Sean's Nav 新版 113 个；自己加过链接的数据不会被动。
+更新时如果卷里还是旧版数据（21 条初始数据、111 条带推广参数版、111 条带朋友探针版、110 条带朋友探针版、110 条 Sean's Nav 旧版、113 条 Sean's Nav 旧版（还带朋友的博客）），`update.sh` / `deploy.sh` 会自动把它换成 Sean's Nav 新版 112 个；自己加过链接的数据不会被动。
 
 ## 链接来源
 
-113 个链接里，109 个网址来自原站公开接口，没有自己编的网址；其余 4 条是 Sean 自己的：我的探针（https://komari.greystack.dev）、绿云 GreenCloud（https://greencloudvps.com/）、小秘书 V.PS（https://v.ps/）、RFC（https://rfchost.com/，官网已核实：地区含日本，套餐命名与他那台 RFC-JP2-CO-Mirco 的 CO 系列一致）。图标能从原站下载的都下载到了 `web/icons/`；只有 NodeSeek 的图标原站返回 403，下不到，页面上会自动用它的源站 favicon 代替，实在没有就只显示首字母。
+112 个链接里，108 个网址来自原站公开接口，没有自己编的网址；其余 4 条是 Sean 自己的：我的探针（https://komari.greystack.dev）、绿云 GreenCloud（https://greencloudvps.com/）、小秘书 V.PS（https://v.ps/）、RFC（https://rfchost.com/，官网已核实：地区含日本，套餐命名与他那台 RFC-JP2-CO-Mirco 的 CO 系列一致）。图标能从原站下载的都下载到了 `web/icons/`；只有 NodeSeek 的图标原站返回 403，下不到，页面上会自动用它的源站 favicon 代替，实在没有就只显示首字母。
