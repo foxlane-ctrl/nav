@@ -1,0 +1,10 @@
+<svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <!-- 左上蓝色数据条 -->
+    <rect x="0" y="4" width="20" height="6" rx="1" fill="#4B6BDB"/>
+    
+    <!-- 中间红色核心块 (代表BITSFLOW主体) -->
+    <rect x="6" y="13" width="20" height="6" rx="1" fill="#E70012"/>
+    
+    <!-- 右下黄色数据条 -->
+    <rect x="12" y="22" width="20" height="6" rx="1" fill="#F9D73F"/>
+</svg>
