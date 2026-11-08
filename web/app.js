@@ -313,13 +313,130 @@ var pondEnabled = false, pondRunning = false;
   });
 
   // 荷叶：3 片，固定位置附近极慢地漂，带缺口，其中一片上有一朵小花；内容区下方变淡
+  // 活水：光斑（caustics）、光柱、涟漪环 — 全部低成本 canvas 绘制
+  var caustics = [];
+  for (var ci = 0; ci < 9; ci++) {
+    caustics.push({ fx: Math.random(), fy: Math.random(), r: 90 + Math.random() * 160, sp: 0.008 + Math.random() * 0.014, ph: Math.random() * Math.PI * 2 });
+  }
+  var rays = [
+    { fx: 0.24, w: 120, tilt: 0.28, sp: 0.010, ph: 0 },
+    { fx: 0.58, w: 90, tilt: 0.22, sp: 0.007, ph: 2.1 },
+    { fx: 0.84, w: 70, tilt: 0.32, sp: 0.012, ph: 4.2 }
+  ];
+  var ripples = []; // {x,y,r,a,max}
+  function addRipple(x, y, maxR) {
+    if (ripples.length > 12) ripples.shift();
+    ripples.push({ x: x, y: y, r: 4, a: 0.28, max: maxR || 46 });
+  }
   var pads = [
     { fx: 0.14, fy: 0.22, r: 34, drift: 0, flower: false },
     { fx: 0.82, fy: 0.68, r: 42, drift: 2, flower: true },
     { fx: 0.58, fy: 0.88, r: 28, drift: 4, flower: false }
   ];
+  // 水面光斑：几团暖色柔光在水面缓慢漂移、明暗呼吸，像阳光穿过水面的折射
+  function drawCaustics(now) {
+    var t = now / 1000;
+    caustics.forEach(function (c) {
+      var x = c.fx * W + Math.sin(t * c.sp * 6 + c.ph) * 60;
+      var y = c.fy * H + Math.cos(t * c.sp * 5 + c.ph * 1.3) * 40;
+      var a = 0.05 + 0.03 * Math.sin(t * 0.35 + c.ph);
+      if (a <= 0.01) return;
+      ctx.save();
+      ctx.globalAlpha = dimAt(x, y) ? a * 0.4 : a;
+      var g = ctx.createRadialGradient(x, y, 0, x, y, c.r);
+      g.addColorStop(0, 'rgba(255,224,170,0.9)');
+      g.addColorStop(0.6, 'rgba(255,210,150,0.25)');
+      g.addColorStop(1, 'rgba(255,210,150,0)');
+      ctx.fillStyle = g;
+      ctx.fillRect(x - c.r, y - c.r, c.r * 2, c.r * 2);
+      ctx.restore();
+    });
+  }
+  // 斜射光柱：三道极淡的斜光带，缓慢左右摇摆
+  function drawRays(now) {
+    var t = now / 1000;
+    rays.forEach(function (r) {
+      var x = r.fx * W + Math.sin(t * r.sp * 6 + r.ph) * 50;
+      ctx.save();
+      ctx.globalAlpha = 0.05;
+      ctx.translate(x, -40);
+      ctx.rotate(r.tilt);
+      var g = ctx.createLinearGradient(-r.w / 2, 0, r.w / 2, 0);
+      g.addColorStop(0, 'rgba(255,230,180,0)');
+      g.addColorStop(0.5, 'rgba(255,230,180,0.55)');
+      g.addColorStop(1, 'rgba(255,230,180,0)');
+      ctx.fillStyle = g;
+      ctx.fillRect(-r.w / 2, 0, r.w, H + 80);
+      ctx.restore();
+    });
+  }
+  // 涟漪环：鱼游过和荷叶处不断扩散的细环
+  function drawRipples(dt) {
+    for (var i = ripples.length - 1; i >= 0; i--) {
+      var r = ripples[i];
+      r.r += 26 * dt;
+      r.a *= Math.pow(0.35, dt * 2);
+      if (r.r >= r.max || r.a < 0.01) { ripples.splice(i, 1); continue; }
+      ctx.save();
+      ctx.globalAlpha = r.a * 0.8;
+      ctx.strokeStyle = '#f3e2c7';
+      ctx.lineWidth = 1.5;
+      ctx.beginPath();
+      ctx.ellipse(r.x, r.y, r.r, r.r * 0.45, 0, 0, Math.PI * 2);
+      ctx.stroke();
+      ctx.restore();
+    }
+  }
+  var padRippleAt = 0;
+  // 水滴 💧：几滴小水珠从上空缓缓落下，落到水面泛一圈小涟漪；数量很少，性能轻
+  var droplets = [];
+  function seedDroplets() {
+    droplets = [];
+    for (var di = 0; di < 5; di++) {
+      droplets.push({
+        x: Math.random() * W, y: Math.random() * H * 0.6,
+        targetY: H * (0.2 + Math.random() * 0.65),
+        speed: 55 + Math.random() * 45, r: 2 + Math.random() * 1.6,
+        ph: Math.random() * Math.PI * 2
+      });
+    }
+  }
+  seedDroplets();
+  window.addEventListener('resize', seedDroplets);
+  function drawDroplets(now, dt) {
+    var t = now / 1000;
+    droplets.forEach(function (d) {
+      d.y += d.speed * dt;
+      var wob = Math.sin(t * 1.2 + d.ph) * 4;
+      var x = d.x + wob, y = d.y;
+      ctx.save();
+      ctx.globalAlpha = dimAt(x, y) ? 0.25 : 0.75;
+      // 水珠：拉长的小水滴，带一点高光
+      ctx.beginPath();
+      ctx.ellipse(x, y, d.r * 0.7, d.r * 1.3, 0, 0, Math.PI * 2);
+      ctx.fillStyle = 'rgba(200,225,245,0.55)';
+      ctx.fill();
+      ctx.beginPath();
+      ctx.arc(x - d.r * 0.2, y - d.r * 0.5, d.r * 0.28, 0, Math.PI * 2);
+      ctx.fillStyle = 'rgba(255,255,255,0.85)';
+      ctx.fill();
+      ctx.restore();
+      if (d.y >= d.targetY) {
+        addRipple(d.x + wob, d.targetY, 22 + Math.random() * 10);
+        d.y = -12;
+        d.x = Math.random() * W;
+        d.targetY = H * (0.2 + Math.random() * 0.65);
+        d.speed = 55 + Math.random() * 45;
+      }
+    });
+  }
   function drawPads(now) {
     var t = now / 1000;
+    if (now - padRippleAt > 2600) {
+      padRippleAt = now;
+      var pp = pads[Math.floor(Math.random() * pads.length)];
+      addRipple(pp.fx * W, pp.fy * H, 30 + Math.random() * 16);
+    }
     pads.forEach(function (p) {
       var x = p.fx * W + Math.sin(t * 0.05 + p.drift) * 12;
       var y = p.fy * H + Math.cos(t * 0.04 + p.drift) * 8;
@@ -398,6 +515,12 @@ var pondEnabled = false, pondRunning = false;
     var under = dimAt(f.x, f.y) || dimAt(f.x + Math.cos(f.heading) * f.length * 0.4, f.y + Math.sin(f.heading) * f.length * 0.4);
     f.targetAlpha = under ? 0.30 : 0.92;
     f.alpha += (f.targetAlpha - f.alpha) * Math.min(1, dt * 2);
+    // 鱼游过时每隔一会儿泛一圈涟漪
+    f.rippleAt = f.rippleAt || 0;
+    if (now - f.rippleAt > 0.9 + Math.random() * 0.8) {
+      f.rippleAt = now;
+      addRipple(f.x, f.y, 34 + Math.random() * 22);
+    }
     // 尾迹：水花一边淡出一边扩散，像涟漪一样散开
     var tx = f.x - Math.cos(f.heading) * f.length * 0.5;
     var ty = f.y - Math.sin(f.heading) * f.length * 0.5;
@@ -451,9 +574,13 @@ var pondEnabled = false, pondRunning = false;
     var dt = Math.min(0.05, (now - lastT) / 1000 || 0.016);
     lastT = now;
     fish.forEach(function (f) { step(f, dt, now / 1000); });
+    drawCaustics(now);
     drawPads(now);
     // 深的鱼先画（后画的在上层）
     fish.forEach(function (f) { drawFish(f, now); });
+    drawDroplets(now, dt);
+    drawRipples(dt);
+    drawRays(now);
   }
 
   function loop(now) {
@@ -467,8 +594,12 @@ var pondEnabled = false, pondRunning = false;
   function drawStatic() {
     ctx.clearRect(0, 0, W, H);
     var now = 1000;
+    drawCaustics(now);
     drawPads(now);
     fish.forEach(function (f) { drawFish(f, now); });
+    drawDroplets(now, 0);
+    ripples.push({ x: W * 0.5, y: H * 0.6, r: 20, a: 0.2, max: 46 });
+    drawRipples(0.016);
   }
 
   setInterval(function () {
