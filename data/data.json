@@ -54,12 +54,6 @@
       "url": "https://komari.greystack.dev"
     },
     {
-      "id": "f001",
-      "categoryId": "daily",
-      "name": "博客",
-      "url": "https://blog.xiaoworks.com/"
-    },
-    {
       "id": "f002",
       "categoryId": "daily",
       "name": "个人主页",
