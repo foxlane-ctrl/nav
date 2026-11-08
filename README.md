@@ -1,26 +1,31 @@
 # 我的导航站（Go 前后端版）
 
-深色导航页，仿 XiaoWork Nav 的样子：左侧分类栏、中间大时钟、Google 搜索框、大图标方块。
+深色导航页，1:1 仿 XiaoWork Nav（nav.xiaoworks.com）：左侧分类栏、中间大时钟、Google 搜索框、米色大方块。
+默认就是截图里的“锦鲤池塘”主题（黑底、橙色点缀、米色方块），右上角可以切深色 / 浅色 / 池塘、切滚动模式 / 标签模式。
 这次是完整的前后端：**Go 后端 + 网页前端**，不用 PHP，不用 Node。
 
 - 后端：Go（标准库，无第三方依赖），提供 JSON API，数据存在本地 `data/data.json`（不用数据库）
-- 前端：`web/`，打开页面时从 `/api/bookmarks` 拉分类和链接
+- 前端：`web/`，打开页面时从 `/api/bookmarks` 拉分类和链接；图标存在 `web/icons/`（从原站公开接口下载的），加载失败时自动换源站 favicon，再失败只留首字母
 - 管理员登录后，可直接在网页上加链接、改链接、删链接、加分类、删分类，不用改代码
 
 GitHub 仓库：https://github.com/foxlane-ctrl/nav
 部署后地址：`http://你的服务器IP:8080`
 
-## 里面有什么（21 个链接）
+## 里面有什么（111 个链接，和原站一模一样）
 
-- Daily：NodeSeek、cloudflare、ITDOG、komari探针（4 个）
-- SpeedTest：speedtest、Fast、cf测速、LibreSpeed、MeasurementLab（5 个）
-- 常用：GitHub、Google（2 个）
-- IP&DNS：IP查询（1 个）
-- AI & 智能：ChatGPT、Claude、Gemini（3 个）
-- VPS/云服务器：V.PS、DMIT、GoMami（3 个）
-- 邮箱：Gmail、Outlook（2 个）
-- 域名：暂无
-- 其他导航：XiaoWork Nav（1 个）
+链接清单直接从原站公开接口 `https://nav.xiaoworks.com/api/v1/public/navigation` 拿的，分类顺序和每个分类里的链接顺序都和原站一致：
+
+- Daily（19 个）：博客、个人主页、NodeSeek、烧饼论坛、cloudflare、ITDOG、优选IP、流量消耗器、大文件下载、komari探针、tcp调优、节点一键脚本、肥羊订阅转换、订阅转换、各地延迟域名、免费图床、剩余价值计算器、地址生成器、极简探针
+- SpeedTest（8 个）：speedtest、谷歌测速、Fast、cf测速、LibreSpeed、Measurementlab、IP+测速、speedtest单线程
+- 常用（7 个）：YouTube、GitHub、telegram、Netflix、Spotify、Bilibili、迪士尼+
+- IP&DNS（14 个）：IP138、IPinfo、ping0、iping、ippure、Scamalytics、IPLEAK、DNSLEAKTEST、BrowserLeaks、DNSCheck、IP 检测、iplark、IP分流检测、IPsuper
+- AI & 智能（10 个）：ChatGPT、Gemini、Claude、Midjourney、DeepSeek、通义千问、kimi、Manus、Grok、Cursor
+- VPS/云服务器（28 个）：datawave、Berohost、DMIT(大妈)、搬瓦工、vmiss、Vmrack、bitsflow、nosla、Jtti、Akile、ReckNerd、谷歌云、甲骨文云、亚马逊云、ColoCrossing、gomami(狗妈)、Hosthatch、Zouter、Evoxt、华纳云、虫网、面包云、阿里云、腾讯云、华为云、莱卡云、优刻得、HytronVPS（海创）
+- 邮箱（13 个）：Gmail、Outlook、protonmail、QQ邮箱、88完美邮箱、网易邮箱、Yahoo邮箱、临时edu邮箱、tempmail临时邮箱、临时邮箱、nodeseek邮箱、原邮邮箱、微软邮箱管理
+- 域名（11 个）：cloudflare、GoDaddy、Namecheap、Nameslio、Gname、Onamae、porkhub、marketing、IONOS、Name、spaceship
+- 其他导航（1 个）：科技lion导航站
+
+注意：原站有几条 VPS / 邮箱链接带了他自己的推广参数（aff=…），是原样照抄的；如果不想给别人带推广，把那些链接的 `?aff=…` / `aff.php?aff=…` 部分去掉就行。
 
 ## 1. 第一次部署：`bash deploy.sh`（一键部署）
 
@@ -80,12 +85,10 @@ go test ./...     # 跑测试
 go vet ./...      # 检查代码
 ```
 
-数据文件在 `data/data.json`（第一次启动自动生成，里面就是上面 21 个链接；这个文件不进 Git）。
+数据文件在 `data/data.json`（111 个链接，进 Git；第一次启动如果卷里没有，会用它做初始数据）。
 
-## 没加上的链接（不知道真实网址，没硬编）
+更新时如果卷里还是旧版 21 个链接的初始数据，`update.sh` / `deploy.sh` 会自动把它换成新版 111 个；自己加过链接的数据不会被动。
 
-朋友截图里这些只看到名字、不知道网址，所以没放进来，知道网址后在网页上用管理员账号加上就行：
+## 链接来源
 
-- Daily：博客、个人主页、娱乐论坛、优选IP、流量消耗器、大文件下载、tcp测速、节点一键脚本、肥羊订阅转换、订阅转换、各地延迟城市名、免费图片、剩余价钱计算器、地址生成器、极速探针
-- SpeedTest：谷歌测速、IP+测速、speedtest单线程
-- IP&DNS、域名：截图里有分类和数量，但没看到具体链接名
+全部 111 个链接的网址都来自原站公开接口，没有自己编的网址。图标能从原站下载的都下载到了 `web/icons/`；只有 NodeSeek 的图标原站返回 403，下不到，页面上会自动用它的源站 favicon 代替，实在没有就只显示首字母。

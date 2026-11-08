@@ -65,6 +65,17 @@ ADMIN_PASS="${NAV_ADMIN_PASSWORD:-change-me}"
 echo "正在构建 Go 镜像（第一次要下载基础镜像，稍等）..."
 docker build -t navsite:latest .
 
+# ---- 数据升级：卷里如果还是旧版 21 个链接的初始数据，就换成新版 111 个链接 ----
+# 两个特征同时满足才换（21 条链接，并且里面有 XiaoWork Nav 这一条）；
+# 自己加过链接的数据绝不动。
+if [ -f data/data.json ] && docker volume inspect navsite-data >/dev/null 2>&1; then
+  OLD_COUNT=$(docker run --rm -v navsite-data:/data alpine sh -c 'grep -c "categoryId" /data/data.json 2>/dev/null || echo 0')
+  if [ "$OLD_COUNT" = "21" ] && docker run --rm -v navsite-data:/data alpine sh -c 'grep -q "XiaoWork Nav" /data/data.json 2>/dev/null'; then
+    echo "检测到旧版初始数据（21 个链接），升级到新版（111 个链接）…"
+    docker run --rm -v navsite-data:/data -v "$PWD/data:/seed:ro" alpine cp /seed/data.json /data/data.json
+  fi
+fi
+
 docker rm -f nav-site >/dev/null 2>&1 || true
 
 docker run -d --name nav-site --restart always \

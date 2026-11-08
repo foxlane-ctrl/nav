@@ -11,6 +11,9 @@ RUN apk add --no-cache ca-certificates tzdata
 WORKDIR /app
 COPY --from=build /navsite /navsite
 COPY web /app/web
+# 初始数据（111 个链接，见 data/data.json）：新卷第一次创建时，
+# Docker 会把镜像里的这份数据拷进卷里；已有的卷不受影响。
+COPY data /app/data
 # 数据目录（挂卷后数据不丢）
 RUN mkdir -p /app/data
 ENV PORT=8080
