@@ -399,7 +399,7 @@
       "id": "f059",
       "categoryId": "vps",
       "name": "datawave",
-      "url": "https://datawave.sh/console?affId=258"
+      "url": "https://datawave.sh/console"
     },
     {
       "id": "f060",
@@ -411,25 +411,25 @@
       "id": "f061",
       "categoryId": "vps",
       "name": "DMIT(大妈)",
-      "url": "https://www.dmit.io/aff.php?aff=18305"
+      "url": "https://www.dmit.io/aff.php"
     },
     {
       "id": "f062",
       "categoryId": "vps",
       "name": "搬瓦工",
-      "url": "https://bandwagonhost.com/aff.php?aff=81538"
+      "url": "https://bandwagonhost.com/aff.php"
     },
     {
       "id": "f063",
       "categoryId": "vps",
       "name": "vmiss",
-      "url": "https://app.vmiss.com/aff.php?aff=4958"
+      "url": "https://app.vmiss.com/aff.php"
     },
     {
       "id": "f064",
       "categoryId": "vps",
       "name": "Vmrack",
-      "url": "https://www.vmrack.net?ref_code=5ipQZuJbuUs"
+      "url": "https://www.vmrack.net"
     },
     {
       "id": "f065",
@@ -453,13 +453,13 @@
       "id": "f068",
       "categoryId": "vps",
       "name": "Akile",
-      "url": "https://akile.ai/register?aff_code=92ae775a-9a5e-43fb-b1c3-9d73fd6b5b70"
+      "url": "https://akile.ai/register"
     },
     {
       "id": "f069",
       "categoryId": "vps",
       "name": "ReckNerd",
-      "url": "https://my.racknerd.com/aff.php?aff=19488"
+      "url": "https://my.racknerd.com/aff.php"
     },
     {
       "id": "f070",
@@ -483,19 +483,19 @@
       "id": "f073",
       "categoryId": "vps",
       "name": "ColoCrossing",
-      "url": "https://cloud.colocrossing.com/aff.php?aff=1674"
+      "url": "https://cloud.colocrossing.com/aff.php"
     },
     {
       "id": "f074",
       "categoryId": "vps",
       "name": "gomami(狗妈)",
-      "url": "https://gomami.io/aff.php?aff=507"
+      "url": "https://gomami.io/aff.php"
     },
     {
       "id": "f075",
       "categoryId": "vps",
       "name": "Hosthatch",
-      "url": "https://cloud.hosthatch.com/a/5425"
+      "url": "https://cloud.hosthatch.com/"
     },
     {
       "id": "f076",
@@ -561,7 +561,7 @@
       "id": "f086",
       "categoryId": "vps",
       "name": "HytronVPS（海创）",
-      "url": "https://hyvps.hytron.io/register?invite=E74LTcAajdVg"
+      "url": "https://hyvps.hytron.io/register"
     },
     {
       "id": "f087",
