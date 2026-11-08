@@ -85,54 +85,315 @@ function tick() {
 }
 tick(); setInterval(tick, 1000);
 
-// ---------- 锦鲤池塘画布（原站是 ascii-pond 动画，这里是同效果的轻量近似） ----------
+// ---------- 锦鲤池塘：像素大锦鲤 ----------
+// 原站（nav.xiaoworks.com）实测：AsciiPondBackground，配置是
+//   species: [{ type: 'koi', count: 宽屏 4 / 手机 3, young: 0 }], theme: 'dark', fixed
+//   palette: page [26,25,23], bg [26,25,33]
+// 鱼本身（ascii-pond 的 koi.js）：20 节脊柱，体长 baseLength = clamp(min(宽,高)*0.5, 170, 420)px，
+//   成年鱼取 0.6–1.0 倍，即手机约 120–195px、桌面约 250–420px —— 是大鱼，不是小图标；
+//   由 8–12px 的字块（glyph tile）拼成，颜色：白 [236,228,218]、红 [232,96,56]、黑 [92,90,108]、
+//   鳍 [214,206,198]、眼 [20,20,26]；品种 kohaku（白+红）、sanke（白+红+黑）、tancho（头顶一点红）；
+//   游动是 cruise / glide / explore / rest 等心情轮换，尾巴摆动，鱼会避开标题/搜索/方块等内容区，
+//   在内容下方变淡、只在空隙里清楚可见。
+// 下面是自己写的同效果实现，不抄 vendor 代码：每条鱼先画在一张 36×16 的低分辨率像素画布上，
+// 再以 imageSmoothingEnabled=false 放大绘制，块状像素感是刻意保留的；身体按脊柱分段错位摆动，
+// 尾巴扇形摇摆；鱼在内容区下方自动变淡。只在池塘主题下运行，尊重 prefers-reduced-motion。
 var pondEnabled = false, pondRunning = false;
 (function pond() {
   var cv = $('pond-canvas'), ctx = cv.getContext('2d');
-  var fish = [], W = 0, H = 0, raf = null;
-  var COLORS = ['#e6a878', '#f3e2c7', '#d98758', '#e8b34b', '#f6ead6'];
+  var W = 0, H = 0, dpr = 1, raf = null, lastT = 0;
+  var reduced = window.matchMedia('(prefers-reduced-motion: reduce)');
+  // 像素鱼：36 格长 × 16 格高，每格 1 个像素单元
+  var PW = 36, PH = 16, MID = 8;
+  var KOI = {
+    white: '#ece4da', red: '#e86038', black: '#5c5a6c',
+    fin: '#d6cec6', eye: '#14141a'
+  };
+  var VARIETIES = ['kohaku', 'kohaku', 'kohaku', 'sanke', 'sanke', 'tancho'];
+  var zones = [], zonesAt = 0;
+
   function resize() {
-    W = cv.width = window.innerWidth; H = cv.height = window.innerHeight;
+    dpr = Math.min(window.devicePixelRatio || 1, 2);
+    W = window.innerWidth; H = window.innerHeight;
+    cv.width = Math.round(W * dpr); cv.height = Math.round(H * dpr);
+    cv.style.width = W + 'px'; cv.style.height = H + 'px';
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    collectZones();
   }
   window.addEventListener('resize', resize);
+  window.addEventListener('scroll', function () { collectZones(); }, { passive: true });
   resize();
-  function makeFish() {
-    return {
-      x: Math.random() * W, y: Math.random() * H,
-      a: Math.random() * Math.PI * 2, s: 0.25 + Math.random() * 0.35,
-      len: 26 + Math.random() * 26, wob: Math.random() * Math.PI * 2,
-      c: COLORS[Math.floor(Math.random() * COLORS.length)]
-    };
-  }
-  for (var i = 0; i < (window.innerWidth < 700 ? 3 : 5); i++) fish.push(makeFish());
-  function draw() {
-    if (!pondEnabled || window.matchMedia('(prefers-reduced-motion: reduce)').matches) { pondRunning = false; return; }
-    pondRunning = true;
-    ctx.clearRect(0, 0, W, H);
-    fish.forEach(function (f) {
-      f.a += (Math.random() - 0.5) * 0.02;
-      f.wob += 0.08;
-      f.x += Math.cos(f.a) * f.s; f.y += Math.sin(f.a) * f.s * 0.7;
-      if (f.x < -60) f.x = W + 60; if (f.x > W + 60) f.x = -60;
-      if (f.y < -60) f.y = H + 60; if (f.y > H + 60) f.y = -60;
-      ctx.save();
-      ctx.translate(f.x, f.y); ctx.rotate(f.a);
-      ctx.globalAlpha = 0.5;
-      ctx.fillStyle = f.c;
-      ctx.beginPath(); ctx.ellipse(0, 0, f.len / 2, f.len / 5, 0, 0, Math.PI * 2); ctx.fill();
-      // 尾巴
-      var tw = Math.sin(f.wob) * 6;
-      ctx.beginPath(); ctx.moveTo(-f.len / 2, 0);
-      ctx.lineTo(-f.len / 2 - 14, -8 + tw); ctx.lineTo(-f.len / 2 - 14, 8 + tw);
-      ctx.closePath(); ctx.fill();
-      ctx.restore();
+
+  // 内容区矩形：鱼游到这些区域下方时变淡（原站的 avoid 列表同款思路）
+  function collectZones() {
+    var now = Date.now();
+    if (now - zonesAt < 250) return;
+    zonesAt = now;
+    zones = [];
+    var sels = '.shell__topbar, .rail, .clock, .search, .category__head, .tiles, .tabs, .modal-wrap.open';
+    document.querySelectorAll(sels).forEach(function (el) {
+      var r = el.getBoundingClientRect();
+      if (r.width > 0 && r.height > 0) zones.push(r);
     });
-    raf = requestAnimationFrame(draw);
   }
+  function dimAt(x, y) {
+    for (var i = 0; i < zones.length; i++) {
+      var r = zones[i];
+      if (x >= r.left - 8 && x <= r.right + 8 && y >= r.top - 8 && y <= r.bottom + 8) return true;
+    }
+    return false;
+  }
+
+  // 确定性伪随机（同一条鱼的花纹每次打开都一样，不闪烁）
+  function hash(n, s) {
+    var v = Math.sin(n * 127.1 + s * 311.7) * 43758.5453;
+    return v - Math.floor(v);
+  }
+  // 身体半宽（占体长的比例）：钝圆头、丰满肩部、收窄尾柄 —— 与原站 halfWidth 同款轮廓
+  function halfWidth(s) {
+    if (s < 0.12) return 0.11 * Math.pow(Math.sin((s / 0.12) * Math.PI / 2), 0.55);
+    if (s < 0.30) return 0.11 + 0.025 * ((s - 0.12) / 0.18);
+    var t = (s - 0.30) / 0.44;
+    if (t > 1) t = 1;
+    return 0.033 + 0.102 * (1 - t * t * (3 - 2 * t));
+  }
+  // 尾巴半宽：从尾柄扇开，末端带 V 形缺口
+  function tailHalfWidth(s) {
+    var t = (s - 0.70) / 0.30;
+    if (t < 0) t = 0;
+    return 0.03 + 0.15 * Math.pow(t, 0.8);
+  }
+
+  // 每条鱼的花纹：红斑 2–3 块（sanke 再加 1–2 块黑斑，tancho 只有头顶一点红）
+  function makeMarkings(f) {
+    var marks = [];
+    if (f.variety === 'tancho') {
+      marks.push({ s: 0.06, a: 0, rs: 0.05, ra: 0.45, c: 'red' });
+      return marks;
+    }
+    var n = 2 + Math.floor(hash(f.id, 1) * 2);
+    for (var i = 0; i < n; i++) {
+      marks.push({
+        s: 0.18 + hash(f.id, 10 + i) * 0.45,
+        a: (hash(f.id, 20 + i) - 0.5) * 1.1,
+        rs: 0.06 + hash(f.id, 30 + i) * 0.07,
+        ra: 0.35 + hash(f.id, 40 + i) * 0.35,
+        c: 'red'
+      });
+    }
+    if (f.variety === 'sanke') {
+      marks.push({ s: 0.45 + hash(f.id, 50) * 0.2, a: (hash(f.id, 51) - 0.5) * 1.2, rs: 0.05, ra: 0.3, c: 'black' });
+      marks.push({ s: 0.15 + hash(f.id, 52) * 0.15, a: (hash(f.id, 53) - 0.5) * 1.0, rs: 0.04, ra: 0.3, c: 'black' });
+    }
+    return marks;
+  }
+
+  // 把一条鱼画到低分辨率像素画布上（每格 1px，返回 canvas）
+  function paintSprite(f, tailSwing) {
+    var c = document.createElement('canvas');
+    c.width = PW; c.height = PH;
+    var g = c.getContext('2d');
+    var marks = f.markings;
+    for (var x = 0; x < PW; x++) {
+      var s = x / (PW - 1);
+      var isTail = s >= 0.70;
+      var hw = (isTail ? tailHalfWidth(s) : halfWidth(s)) * PW;
+      // 尾巴摆动：越靠尾端偏移越大
+      var wag = isTail ? Math.sin(tailSwing + (s - 0.7) * 6) * (s - 0.7) * 3.2 : Math.sin(tailSwing * 0.5 + s * 2) * 0.35;
+      for (var y = 0; y < PH; y++) {
+        var dy = y - MID - wag;
+        var ady = Math.abs(dy);
+        if (ady > hw) continue;
+        // V 形缺口：尾巴末端中间镂空
+        if (isTail && s > 0.92 && ady < (s - 0.92) * 22) continue;
+        var across = hw > 0 ? dy / hw : 0;
+        var col = 'white';
+        // 腹缘和尾柄永远留白，衬托花纹
+        if (!(Math.abs(across) > 0.9 || s > 0.74)) {
+          for (var m = 0; m < marks.length; m++) {
+            var mk = marks[m];
+            var ds = (s - mk.s) / mk.rs, da = (across - mk.a) / mk.ra;
+            // 粗糙边缘：花纹像手绘的一样不规则
+            var wob = (hash(x * 3 + y * 7, f.id) - 0.5) * 0.7;
+            if (ds * ds + da * da + wob * 0.4 < 1) { col = mk.c; break; }
+          }
+        }
+        g.fillStyle = KOI[col];
+        g.fillRect(x, y, 1, 1);
+      }
+    }
+    // 胸鳍：身体两侧各一片，鳍色，随摆动轻微扇动
+    var flap = Math.round(Math.sin(tailSwing * 1.4) * 1);
+    g.fillStyle = KOI.fin;
+    g.fillRect(11, MID + 4 + flap, 3, 1);
+    g.fillRect(12, MID + 5 + flap, 2, 1);
+    g.fillRect(11, MID - 5 - flap, 3, 1);
+    g.fillRect(12, MID - 6 - flap, 2, 1);
+    // 眼睛：头两侧各一颗深色像素
+    g.fillStyle = KOI.eye;
+    g.fillRect(3, MID - 3, 1, 1);
+    g.fillRect(3, MID + 2, 1, 1);
+    return c;
+  }
+
+  function baseLength() {
+    return Math.max(170, Math.min(420, Math.min(W, H) * 0.5));
+  }
+  function makeFish(id, offscreen) {
+    var L = baseLength() * (0.65 + Math.random() * 0.35);
+    var f = {
+      id: id,
+      variety: VARIETIES[Math.floor(Math.random() * VARIETIES.length)],
+      length: L,
+      x: Math.random() * W * 0.8 + W * 0.1,
+      y: Math.random() * H * 0.8 + H * 0.1,
+      heading: Math.random() * Math.PI * 2,
+      speed: 16 + Math.random() * 10,
+      mood: 'cruise', moodUntil: 4 + Math.random() * 8,
+      phase: Math.random() * Math.PI * 2,
+      alpha: 0.9, targetAlpha: 0.9,
+      sprite: null, spriteSwing: -1,
+      trail: []
+    };
+    f.markings = makeMarkings(f);
+    if (offscreen) {
+      var edge = Math.floor(Math.random() * 4);
+      if (edge === 0) { f.x = -L; f.y = H * (0.2 + Math.random() * 0.6); f.heading = 0; }
+      else if (edge === 1) { f.x = W + L; f.y = H * (0.2 + Math.random() * 0.6); f.heading = Math.PI; }
+      else if (edge === 2) { f.x = W * (0.2 + Math.random() * 0.6); f.y = -L; f.heading = Math.PI / 2; }
+      else { f.x = W * (0.2 + Math.random() * 0.6); f.y = H + L; f.heading = -Math.PI / 2; }
+    }
+    return f;
+  }
+
+  var fish = [];
+  function wantCount() { return W < 700 ? 3 : 4; }
+  function seed() {
+    fish = [];
+    var n = wantCount();
+    for (var i = 0; i < n; i++) fish.push(makeFish(i + 1, false));
+  }
+  seed();
+  window.addEventListener('resize', function () {
+    var n = wantCount();
+    while (fish.length < n) fish.push(makeFish(fish.length + 1, true));
+    while (fish.length > n) fish.pop();
+  });
+
+  function pickMood(f, now) {
+    var r = Math.random();
+    if (r < 0.45) { f.mood = 'cruise'; f.moodUntil = now + 6 + Math.random() * 12; }
+    else if (r < 0.7) { f.mood = 'glide'; f.moodUntil = now + 5 + Math.random() * 9; }
+    else if (r < 0.85) { f.mood = 'explore'; f.moodUntil = now + 8 + Math.random() * 12; }
+    else { f.mood = 'rest'; f.moodUntil = now + 4 + Math.random() * 8; }
+  }
+  function moodSpeed(f) {
+    return f.mood === 'rest' ? 0.15 : f.mood === 'glide' ? 0.55 : f.mood === 'explore' ? 1.25 : 1;
+  }
+
+  function step(f, dt, now) {
+    if (now > f.moodUntil) pickMood(f, now);
+    // 靠近边缘时温柔地转向池中央，不穿墙、不瞬移
+    var margin = 140;
+    var nearEdge = f.x < margin || f.x > W - margin || f.y < margin || f.y > H - margin;
+    var targetHeading = f.heading + (Math.random() - 0.5) * 0.35 * dt;
+    if (nearEdge) {
+      var toCentre = Math.atan2(H / 2 - f.y, W / 2 - f.x);
+      var dc = toCentre - f.heading;
+      while (dc > Math.PI) dc -= Math.PI * 2;
+      while (dc < -Math.PI) dc += Math.PI * 2;
+      targetHeading = f.heading + dc * Math.min(1, dt * 1.5);
+    }
+    // 转向限速：大鱼不能原地掉头
+    var diff = targetHeading - f.heading;
+    while (diff > Math.PI) diff -= Math.PI * 2;
+    while (diff < -Math.PI) diff += Math.PI * 2;
+    f.heading += Math.max(-0.5 * dt, Math.min(0.5 * dt, diff));
+    var v = f.speed * moodSpeed(f);
+    f.x += Math.cos(f.heading) * v * dt;
+    f.y += Math.sin(f.heading) * v * dt * 0.8;
+    // 游出边界就从对侧缓缓游回
+    if (f.x < -f.length) f.x = W + f.length * 0.5;
+    if (f.x > W + f.length) f.x = -f.length * 0.5;
+    if (f.y < -f.length) f.y = H + f.length * 0.5;
+    if (f.y > H + f.length) f.y = -f.length * 0.5;
+    // 透明度：内容区下方变淡，空隙里清楚（原站的 dim-under-content）
+    collectZones();
+    var under = dimAt(f.x, f.y) || dimAt(f.x + Math.cos(f.heading) * f.length * 0.4, f.y + Math.sin(f.heading) * f.length * 0.4);
+    f.targetAlpha = under ? 0.30 : 0.92;
+    f.alpha += (f.targetAlpha - f.alpha) * Math.min(1, dt * 2);
+    // 尾迹：记录尾尖位置，画几颗淡出的像素水花
+    var tx = f.x - Math.cos(f.heading) * f.length * 0.5;
+    var ty = f.y - Math.sin(f.heading) * f.length * 0.5;
+    f.trail.push({ x: tx, y: ty, a: 0.14 });
+    if (f.trail.length > 10) f.trail.shift();
+    f.trail.forEach(function (p) { p.a *= 0.94; });
+  }
+
+  function drawFish(f, now) {
+    var swing = now / 1000 * (2.2 + f.speed * 0.06) + f.phase;
+    // 尾巴摆动大时才重画像素精灵，平时复用，省性能
+    if (!f.sprite || Math.abs(swing - f.spriteSwing) > 0.35) {
+      f.sprite = paintSprite(f, swing);
+      f.spriteSwing = swing;
+    }
+    var px = f.length / PW; // 每像素格的屏幕尺寸：大鱼 = 大像素块
+    var spriteH = PH * px;
+    ctx.save();
+    ctx.globalAlpha = Math.max(0, Math.min(1, f.alpha));
+    ctx.imageSmoothingEnabled = false;
+    // 尾迹
+    f.trail.forEach(function (p) {
+      if (p.a <= 0.01) return;
+      ctx.globalAlpha = p.a * f.alpha;
+      ctx.fillStyle = '#f3e2c7';
+      ctx.fillRect(p.x - 1, p.y - 1, 2, 2);
+    });
+    ctx.globalAlpha = Math.max(0, Math.min(1, f.alpha));
+    ctx.translate(f.x, f.y);
+    ctx.rotate(f.heading);
+    // 身体按脊柱分 8 段错位绘制：每段上下错开一点，整条鱼像在摆动一样游
+    var slices = 8, sw = PW / slices;
+    for (var i = 0; i < slices; i++) {
+      var t = i / (slices - 1);
+      var off = Math.sin(swing + t * 2.4) * t * t * px * 2.2;
+      ctx.drawImage(f.sprite, i * sw, 0, sw, PH, -f.length / 2 + i * sw * px, -spriteH / 2 + off, sw * px, spriteH);
+    }
+    ctx.restore();
+  }
+
+  function drawFrame(now) {
+    ctx.clearRect(0, 0, W, H);
+    var dt = Math.min(0.05, (now - lastT) / 1000 || 0.016);
+    lastT = now;
+    fish.forEach(function (f) { step(f, dt, now / 1000); });
+    // 深的鱼先画（后画的在上层）
+    fish.forEach(function (f) { drawFish(f, now); });
+  }
+
+  function loop(now) {
+    if (!pondEnabled) { pondRunning = false; return; }
+    pondRunning = true;
+    drawFrame(now);
+    raf = requestAnimationFrame(loop);
+  }
+
+  // 减速动效：只画一帧静态鱼，不循环
+  function drawStatic() {
+    ctx.clearRect(0, 0, W, H);
+    var now = 1000;
+    fish.forEach(function (f) { drawFish(f, now); });
+  }
+
   setInterval(function () {
-    if (pondEnabled && !pondRunning) draw();
-    if (!pondEnabled && raf) { cancelAnimationFrame(raf); raf = null; pondRunning = false; ctx.clearRect(0, 0, W, H); }
-  }, 500);
+    if (!pondEnabled) {
+      if (raf) { cancelAnimationFrame(raf); raf = null; }
+      if (pondRunning) { pondRunning = false; ctx.clearRect(0, 0, W, H); }
+      return;
+    }
+    if (reduced.matches) { drawStatic(); return; }
+    if (!pondRunning) { lastT = performance.now(); raf = requestAnimationFrame(loop); }
+  }, 400);
 })();
 
 // ---------- API ----------
