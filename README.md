@@ -25,7 +25,7 @@ GitHub 仓库：https://github.com/foxlane-ctrl/nav
 - 域名（11 个）：cloudflare、GoDaddy、Namecheap、Nameslio、Gname、Onamae、porkhub、marketing、IONOS、Name、spaceship
 - 其他导航（1 个）：科技lion导航站
 
-注意：原站有几条 VPS / 邮箱链接带了他自己的推广参数（aff=…），是原样照抄的；如果不想给别人带推广，把那些链接的 `?aff=…` / `aff.php?aff=…` 部分去掉就行。
+注意：原站有几条 VPS / 邮箱链接带了他自己的推广参数（aff=…），2026-11-08 已按 Sean 的要求全部去掉了（共 11 条链接：datawave、DMIT(大妈)、搬瓦工、vmiss、Vmrack、Akile、ReckNerd、ColoCrossing、gomami(狗妈)、Hosthatch、HytronVPS（海创）），点这些链接不再给任何人带推广收益。
 
 ## 1. 第一次部署：`bash deploy.sh`（一键部署）
 
