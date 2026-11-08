@@ -33,7 +33,7 @@ function catIcon(name) { return CAT_ICONS[name] || '📁'; }
 // 三个主题：pond（锦鲤池塘，默认）、mist（雾蓝）、inkgold（墨金），各自独立。
 // 旧值 dark 映射到墨金，旧值 light / morning 映射到雾蓝；未知值落到 pond。锦鲤只在池塘主题下运行。
 var THEME_KEY = 'xn-theme';
-var THEME_COLORS = { pond: '#171410', mist: '#dbeafe', inkgold: '#0a0908' };
+var THEME_COLORS = { pond: '#171410', mist: '#e6f0fd', inkgold: '#0a0908' };
 var THEME_LABELS = { pond: '🐟 锦鲤池塘', mist: '🌊 雾蓝', inkgold: '🌑 墨金' };
 function normalizeTheme(t) {
   if (t === 'dark') t = 'inkgold';

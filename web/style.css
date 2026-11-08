@@ -1,6 +1,6 @@
 /* Sean's Nav — 前端样式，仿 XiaoWork Nav（2026-11-08 从 nav.xiaoworks.com 实测）。
    三个主题，各自独立、各有味道：锦鲤池塘（默认，暖色深水渐变 #171410、橙色点缀、米色方块、像素大锦鲤）、
-   雾蓝（冷调浅蓝底 #dbeafe、深蓝点缀 #1d4ed8，蓝得清楚）和墨金（近黑暖墨底 #0a0908、亮金点缀 #f2c14e）。
+   雾蓝（雾更浓的淡蓝白雾底 #e6f0fd、深蓝点缀 #1d4ed8，带漂移雾层和更强的液态玻璃）和墨金（近黑暖墨底 #0a0908、亮金点缀 #f2c14e）。
    :root 的默认值就是池塘配色；雾蓝 / 墨金用 [data-theme] 覆盖全部变量。
    主题存在 localStorage 的 xn-theme，旧值 dark 映射到墨金，旧值 light / morning 映射到雾蓝，未知值落到池塘。
    打磨标准：干净精致 — 系统字体、8pt 间距（8/16/24/32）、轻字重、柔和阴影、
@@ -27,15 +27,15 @@
 }
 /* ---------- 雾蓝：浅蓝底 + 深蓝点缀，蓝得清楚，和暖调的池塘/墨金完全不同 ---------- */
 [data-theme=mist]{color-scheme:light;
-  --bg-base:#dbeafe;--bg-1:#dbeafe;--bg-2:#dbeafe;--bg-3:#dbeafe;--bg-4:#dbeafe;
-  --surface:rgba(255,255,255,.82);--surface-strong:rgba(255,255,255,.96);--surface-solid:#ffffff;
+  --bg-base:#e6f0fd;--bg-1:#eaf2fe;--bg-2:#dfeafc;--bg-3:#d7e5fb;--bg-4:#d3e2fa;
+  --surface:rgba(255,255,255,.55);--surface-strong:rgba(255,255,255,.72);--surface-solid:#ffffff;
   --border:rgba(29,78,216,.18);--border-strong:rgba(29,78,216,.38);
   --text-main:#0f2a5c;--text-sub:#2c4a7a;--text-dim:#5b7aa8;
   --accent:#1d4ed8;--accent-2:#2563eb;--accent-contrast:#ffffff;
   --danger:#dc2626;--success:#16a34a;--warning:#d97706;
-  --input-bg:#ffffff;--tile-bg:#ffffff;
-  --shadow-soft:0 1px 2px rgba(29,78,216,.12),0 8px 24px rgba(29,78,216,.14);--shadow-card:0 1px 3px rgba(29,78,216,.13),0 4px 12px rgba(29,78,216,.10);
-  --rail-bg:rgba(219,234,254,.88);--rail-border:rgba(29,78,216,.14);--rail-hover:rgba(29,78,216,.09);
+  --input-bg:rgba(255,255,255,.62);--tile-bg:rgba(255,255,255,.55);
+  --shadow-soft:0 1px 2px rgba(29,78,216,.10),0 10px 28px rgba(29,78,216,.12),0 0 24px rgba(255,255,255,.45);--shadow-card:0 1px 3px rgba(29,78,216,.13),0 4px 12px rgba(29,78,216,.10);
+  --rail-bg:rgba(227,238,253,.55);--rail-border:rgba(29,78,216,.14);--rail-hover:rgba(29,78,216,.09);
   --rail-active:rgba(29,78,216,.16);--rail-chip:rgba(29,78,216,.10);--rail-scroll-thumb:rgba(29,78,216,.28);
 }
 /* ---------- 深色：墨金，近黑暖墨底 + 亮金点缀 ---------- */
@@ -72,7 +72,7 @@ body{margin:0;min-height:100vh;color:var(--text-main);
 [data-theme=pond] .tile__label{text-shadow:0 1px 3px rgba(0,0,0,.8),0 0 14px rgba(0,0,0,.5)}
 [data-theme=pond] .clock__time{text-shadow:0 2px 20px rgba(0,0,0,.55)}
 [data-theme=pond] .clock__date,[data-theme=pond] .category__title{text-shadow:0 1px 6px rgba(0,0,0,.65)}
-[data-theme=mist] body{background:#dbeafe}
+[data-theme=mist] body{background:#e6f0fd}
 [data-theme=inkgold] body{background:#0a0908}
 [data-theme=mist] canvas#pond-canvas,[data-theme=inkgold] canvas#pond-canvas{display:none}
 [data-theme=mist] .tile__letter,[data-theme=mist] .tile__text,[data-theme=mist] .tile__fallback{color:#1d4ed8}
@@ -309,3 +309,47 @@ body.list-view .tile__label{width:auto;min-height:0;text-align:left;font-size:.9
   .clock__time{font-size:1.35rem}
 }
 @media(prefers-reduced-motion:reduce){*{animation-duration:1ms!important;transition-duration:1ms!important}}
+
+/* ---------- 雾蓝加雾：更朦胧的雾气 + 更强的液态玻璃（仅 mist，池塘/墨金不动） ---------- */
+/* 雾底变量已在上方 [data-theme=mist] 块里改成淡蓝白雾底 #e6f0fd + 更透的玻璃面；文字仍是深蓝，照样清晰 */
+[data-theme=mist] body{
+  background-color:#e6f0fd;
+  background-image:
+    radial-gradient(ellipse 900px 560px at 82% -10%,rgba(255,255,255,.85),transparent 65%),
+    radial-gradient(ellipse 820px 520px at 8% 108%,rgba(190,214,250,.55),transparent 62%),
+    radial-gradient(ellipse 640px 380px at 50% 46%,rgba(255,255,255,.5),transparent 70%),
+    linear-gradient(160deg,#eef4fe 0%,#e2edfd 48%,#d8e6fb 78%,#d2e0f9 100%);
+}
+/* 漂移的雾层：三团大而软的雾在页面后方缓慢流动，纯 CSS，几乎不耗性能 */
+[data-theme=mist] body::before{
+  content:"";position:fixed;inset:-6% -10%;z-index:0;pointer-events:none;
+  background:
+    radial-gradient(ellipse 560px 300px at 22% 30%,rgba(255,255,255,.75),transparent 70%),
+    radial-gradient(ellipse 640px 340px at 78% 68%,rgba(203,222,250,.6),transparent 70%),
+    radial-gradient(ellipse 420px 240px at 55% 12%,rgba(255,255,255,.55),transparent 70%);
+  filter:blur(6px);
+  animation:mistDrift 70s ease-in-out infinite alternate;
+}
+[data-theme=mist] body::after{
+  content:"";position:fixed;inset:0;z-index:0;pointer-events:none;
+  background:radial-gradient(ellipse 700px 420px at 50% 118%,rgba(255,255,255,.5),transparent 65%);
+}
+@keyframes mistDrift{from{transform:translate3d(-3%,1%,0)}to{transform:translate3d(3%,-2%,0)}}
+[data-theme=mist] #app{position:relative;z-index:1}
+/* 雾蓝液态玻璃加强：更透、更糊、顶部高光更亮 */
+[data-theme=mist] .shell__topbar{backdrop-filter:blur(28px) saturate(190%);-webkit-backdrop-filter:blur(28px) saturate(190%);background:color-mix(in srgb,#e6f0fd 45%,transparent)}
+[data-theme=mist] .rail{backdrop-filter:blur(28px) saturate(190%);-webkit-backdrop-filter:blur(28px) saturate(190%)}
+[data-theme=mist] .search__box{backdrop-filter:blur(26px) saturate(190%);-webkit-backdrop-filter:blur(26px) saturate(190%);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.65),inset 0 -1px 0 rgba(255,255,255,.12),0 20px 52px rgba(29,78,216,.16)}
+[data-theme=mist] .tile__icon{backdrop-filter:blur(20px) saturate(190%);-webkit-backdrop-filter:blur(20px) saturate(190%);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.75),inset 0 -1px 0 rgba(255,255,255,.15),inset 1px 0 0 rgba(255,255,255,.2),0 6px 18px rgba(29,78,216,.14)}
+[data-theme=mist] .tile__label{text-shadow:0 1px 10px rgba(255,255,255,.95),0 1px 3px rgba(255,255,255,.8)}
+[data-theme=mist] .clock__time{backdrop-filter:blur(20px) saturate(180%);-webkit-backdrop-filter:blur(20px) saturate(180%)}
+[data-theme=mist] .modal{background:rgba(255,255,255,.66);backdrop-filter:blur(32px) saturate(190%);-webkit-backdrop-filter:blur(32px) saturate(190%)}
+[data-theme=mist] .layout-switch,[data-theme=mist] .theme-picker__select,[data-theme=mist] .btn,
+[data-theme=mist] .ai-hero__item,[data-theme=mist] .chipbar__item,[data-theme=mist] .tabs__item,
+[data-theme=mist] .category__icon,[data-theme=mist] .badge{
+  backdrop-filter:blur(20px) saturate(180%);-webkit-backdrop-filter:blur(20px) saturate(180%);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.55),var(--shadow-soft)}
+/* 减弱动效时雾层静止不动 */
+@media(prefers-reduced-motion:reduce){[data-theme=mist] body::before{animation:none}}
