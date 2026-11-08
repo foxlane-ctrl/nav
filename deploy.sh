@@ -65,17 +65,31 @@ ADMIN_PASS="${NAV_ADMIN_PASSWORD:-change-me}"
 echo "正在构建 Go 镜像（第一次要下载基础镜像，稍等）..."
 docker build -t navsite:latest .
 
-# ---- 数据升级：卷里如果是初始数据，就换成新版 111 个链接（去推广参数版）----
+# ---- 数据升级：卷里如果是初始数据，就换成 Sean's Nav 新版 113 个链接----
 # 满足以下任一条件才换：(a) 21 条链接的旧初始数据（21 条且有 XiaoWork Nav）；
-# (b) 111 条链接但还带推广参数的旧版（111 条且含 aff=/affId/aff_code/ref_code/invite=）。
-# 自己加过/改过链接的数据两个条件都不满足，绝不动。
+# (b) 111 条链接但还带推广参数的旧版（111 条且含 aff=/affId/aff_code/ref_code/invite=）；
+# (c) 111 条链接的旧版（已去推广参数，但还带朋友的探针 komari.xiaoworks.com）；
+# (d) 110 条链接但还带朋友探针的旧版（同上，中间版本）。
+# 新版是 113 条（Sean's Nav：删了朋友的 2 条探针，加了自己的 komari.greystack.dev，
+# 再加了 3 条自己的 VPS：绿云 GreenCloud、V.PS、RFC）。
+# (e) 110 条的 Sean's Nav 版（有自己的探针，但还没有 3 条新 VPS）也要换成 113 条。
+# 自己加过/改过链接的数据（条数对不上、也没有上述标记）绝不动。
 if [ -f data/data.json ] && docker volume inspect navsite-data >/dev/null 2>&1; then
   OLD_COUNT=$(docker run --rm -v navsite-data:/data alpine sh -c 'grep -c "categoryId" /data/data.json 2>/dev/null || echo 0')
   if [ "$OLD_COUNT" = "21" ] && docker run --rm -v navsite-data:/data alpine sh -c 'grep -q "XiaoWork Nav" /data/data.json 2>/dev/null'; then
-    echo "检测到旧版初始数据（21 个链接），升级到新版（111 个链接，去推广参数版）…"
+    echo "检测到旧版初始数据（21 个链接），升级到 Sean's Nav 新版（113 个链接）…"
     docker run --rm -v navsite-data:/data -v "$PWD/data:/seed:ro" alpine cp /seed/data.json /data/data.json
   elif [ "$OLD_COUNT" = "111" ] && docker run --rm -v navsite-data:/data alpine sh -c 'grep -q -E "aff=|affId|aff_code|ref_code|invite=" /data/data.json 2>/dev/null'; then
-    echo "检测到旧版 111 个链接数据（还带推广参数），升级到去推广参数版…"
+    echo "检测到旧版 111 个链接数据（还带推广参数），升级到 Sean's Nav 新版（113 个链接）…"
+    docker run --rm -v navsite-data:/data -v "$PWD/data:/seed:ro" alpine cp /seed/data.json /data/data.json
+  elif [ "$OLD_COUNT" = "111" ] && docker run --rm -v navsite-data:/data alpine sh -c 'grep -q "komari.xiaoworks.com" /data/data.json 2>/dev/null'; then
+    echo "检测到旧版 111 个链接数据（还带朋友的探针），升级到 Sean's Nav 新版（113 个链接）…"
+    docker run --rm -v navsite-data:/data -v "$PWD/data:/seed:ro" alpine cp /seed/data.json /data/data.json
+  elif [ "$OLD_COUNT" = "110" ] && docker run --rm -v navsite-data:/data alpine sh -c 'grep -q "komari.xiaoworks.com" /data/data.json 2>/dev/null'; then
+    echo "检测到 110 个链接数据（还带朋友的探针），升级到 Sean's Nav 新版（113 个链接）…"
+    docker run --rm -v navsite-data:/data -v "$PWD/data:/seed:ro" alpine cp /seed/data.json /data/data.json
+  elif [ "$OLD_COUNT" = "110" ] && docker run --rm -v navsite-data:/data alpine sh -c 'grep -q "komari.greystack.dev" /data/data.json 2>/dev/null' && ! docker run --rm -v navsite-data:/data alpine sh -c 'grep -q "greencloudvps.com" /data/data.json 2>/dev/null'; then
+    echo "检测到 110 个链接数据（Sean's Nav 旧版，还没有 3 条新 VPS），升级到新版（113 个链接）…"
     docker run --rm -v navsite-data:/data -v "$PWD/data:/seed:ro" alpine cp /seed/data.json /data/data.json
   fi
 fi
