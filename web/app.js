@@ -1,7 +1,7 @@
 // Sean's Nav — 前端：从 Go API (/api/bookmarks) 拉分类和链接并渲染。
 // 布局与行为仿 XiaoWork Nav（2026-11-08 从 nav.xiaoworks.com 实测）：
 // 左侧分类栏（PC）/ 顶部横条（手机）、时钟、搜索、滚动模式 / 标签模式、
-// 三个主题：锦鲤池塘（默认，像素大锦鲤）、雾蓝（冷调浅蓝）、墨金（深墨底 + 暖金），各自独立。
+// 三个主题：锦鲤池塘（默认，像素大锦鲤）、雾蓝（浅蓝底 + 深蓝）、墨金（近黑墨底 + 亮金），各自独立。
 // 米色方块 + 下方名字。主题选择器在顶栏，存在 localStorage 的 xn-theme。
 // 图标数据见 iconmap.js（从原站公开 API 提取，含原站排序）。
 // 未登录只能看；登录管理员后可加/改/删链接和分类。
@@ -33,7 +33,7 @@ function catIcon(name) { return CAT_ICONS[name] || '📁'; }
 // 三个主题：pond（锦鲤池塘，默认）、mist（雾蓝）、inkgold（墨金），各自独立。
 // 旧值 dark 映射到墨金，旧值 light / morning 映射到雾蓝；未知值落到 pond。锦鲤只在池塘主题下运行。
 var THEME_KEY = 'xn-theme';
-var THEME_COLORS = { pond: '#1a1917', mist: '#eef4f8', inkgold: '#0f0e0c' };
+var THEME_COLORS = { pond: '#1a1917', mist: '#dbeafe', inkgold: '#0a0908' };
 var THEME_LABELS = { pond: '🐟 锦鲤池塘', mist: '🌊 雾蓝', inkgold: '🌑 墨金' };
 function normalizeTheme(t) {
   if (t === 'dark') t = 'inkgold';
