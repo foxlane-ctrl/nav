@@ -1,8 +1,8 @@
 /* Sean's Nav — 前端样式，仿 XiaoWork Nav（2026-11-08 从 nav.xiaoworks.com 实测）。
-   三个主题：锦鲤池塘（默认，黑底 #1a1917、橙色点缀、米色方块、像素大锦鲤）、
-   极简（白底 #f5f5f7、留白大、蓝色点缀）和墨金（深墨底 #0f0e0c、暖金点缀）。
-   :root 的默认值就是池塘配色；极简 / 墨金用 [data-theme] 覆盖全部变量。
-   主题存在 localStorage 的 xn-theme，旧值 dark 映射到墨金，light / pond 直接可用，未知值落到池塘。
+   三个主题，各自独立、各有味道：锦鲤池塘（默认，黑底 #1a1917、橙色点缀、米色方块、像素大锦鲤）、
+   雾蓝（冷调浅蓝底 #eef4f8、亮蓝点缀，清爽冷冽）和墨金（深墨底 #0f0e0c、暖金点缀）。
+   :root 的默认值就是池塘配色；雾蓝 / 墨金用 [data-theme] 覆盖全部变量。
+   主题存在 localStorage 的 xn-theme，旧值 dark 映射到墨金，旧值 light / morning 映射到雾蓝，未知值落到池塘。
    打磨标准：干净精致 — 系统字体、8pt 间距（8/16/24/32）、轻字重、柔和阴影、
    克制的点缀色；锦鲤是像素大鱼（见 app.js），只在池塘主题下出现。 */
 *,*:before,*:after{box-sizing:border-box}
@@ -25,18 +25,18 @@
   --rail-bg:rgba(26,25,23,.83);--rail-border:rgba(255,247,240,.11);--rail-hover:rgba(255,247,240,.08);
   --rail-active:rgba(230,168,120,.15);--rail-chip:rgba(255,247,240,.08);--rail-scroll-thumb:rgba(255,247,240,.15);
 }
-/* ---------- 极简：干净白底 + 留白 + 蓝色点缀 ---------- */
-[data-theme=light]{color-scheme:light;
-  --bg-base:#f5f5f7;--bg-1:#f5f5f7;--bg-2:#f5f5f7;--bg-3:#f5f5f7;--bg-4:#f5f5f7;
-  --surface:rgba(255,255,255,.72);--surface-strong:rgba(255,255,255,.92);--surface-solid:#ffffff;
-  --border:rgba(0,0,0,.09);--border-strong:rgba(0,0,0,.22);
-  --text-main:#1d1d1f;--text-sub:#6e6e73;--text-dim:#86868b;
-  --accent:#0071e3;--accent-2:#2997ff;--accent-contrast:#ffffff;
-  --danger:#ff3b30;--success:#34c759;--warning:#ff9500;
+/* ---------- 雾蓝：冷调浅蓝底 + 亮蓝点缀，清爽冷冽，和暖调的池塘/墨金完全不同 ---------- */
+[data-theme=mist]{color-scheme:light;
+  --bg-base:#eef4f8;--bg-1:#eef4f8;--bg-2:#eef4f8;--bg-3:#eef4f8;--bg-4:#eef4f8;
+  --surface:rgba(255,255,255,.78);--surface-strong:rgba(255,255,255,.94);--surface-solid:#ffffff;
+  --border:rgba(15,45,70,.11);--border-strong:rgba(15,45,70,.26);
+  --text-main:#16232e;--text-sub:#5a6b7a;--text-dim:#8ba0b0;
+  --accent:#2563eb;--accent-2:#3b82f6;--accent-contrast:#ffffff;
+  --danger:#dc2626;--success:#16a34a;--warning:#d97706;
   --input-bg:#ffffff;--tile-bg:#ffffff;
-  --shadow-soft:0 1px 2px rgba(0,0,0,.06),0 8px 24px rgba(0,0,0,.08);--shadow-card:0 1px 3px rgba(0,0,0,.08),0 4px 12px rgba(0,0,0,.06);
-  --rail-bg:rgba(251,251,253,.82);--rail-border:rgba(0,0,0,.07);--rail-hover:rgba(0,0,0,.045);
-  --rail-active:rgba(0,113,227,.10);--rail-chip:rgba(0,0,0,.05);--rail-scroll-thumb:rgba(0,0,0,.16);
+  --shadow-soft:0 1px 2px rgba(15,45,70,.07),0 8px 24px rgba(15,45,70,.09);--shadow-card:0 1px 3px rgba(15,45,70,.09),0 4px 12px rgba(15,45,70,.07);
+  --rail-bg:rgba(238,244,248,.86);--rail-border:rgba(15,45,70,.08);--rail-hover:rgba(37,99,235,.07);
+  --rail-active:rgba(37,99,235,.12);--rail-chip:rgba(37,99,235,.08);--rail-scroll-thumb:rgba(15,45,70,.18);
 }
 /* ---------- 深色：墨金，深墨底 + 暖金点缀 ---------- */
 [data-theme=inkgold]{color-scheme:dark;
@@ -61,12 +61,12 @@ body{margin:0;min-height:100vh;color:var(--text-main);
     linear-gradient(158deg,var(--bg-1) 0%,var(--bg-2) 42%,var(--bg-3) 74%,var(--bg-4) 100%);
   background-repeat:no-repeat;background-size:cover}
 [data-theme=pond] body{background:#1a1917}
-[data-theme=light] body{background:#f5f5f7}
+[data-theme=mist] body{background:#eef4f8}
 [data-theme=inkgold] body{background:#0f0e0c}
-[data-theme=light] canvas#pond-canvas,[data-theme=inkgold] canvas#pond-canvas{display:none}
-[data-theme=light] .tile__letter,[data-theme=light] .tile__text,[data-theme=light] .tile__fallback{color:#0071e3}
+[data-theme=mist] canvas#pond-canvas,[data-theme=inkgold] canvas#pond-canvas{display:none}
+[data-theme=mist] .tile__letter,[data-theme=mist] .tile__text,[data-theme=mist] .tile__fallback{color:#2563eb}
 [data-theme=inkgold] .tile__letter,[data-theme=inkgold] .tile__text,[data-theme=inkgold] .tile__fallback{color:#e8b34b}
-[data-theme=light] .search__box{box-shadow:var(--shadow-soft)}
+[data-theme=mist] .search__box{box-shadow:var(--shadow-soft)}
 [data-theme=inkgold] .search__box{box-shadow:var(--shadow-soft)}
 [data-theme=pond] #app{position:relative;z-index:1}
 canvas#pond-canvas{position:fixed;inset:0;z-index:0;pointer-events:none;image-rendering:pixelated}

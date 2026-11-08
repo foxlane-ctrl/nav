@@ -7,13 +7,14 @@
 <meta name="description" content="Sean's Nav — AI, daily sites, speed tests, VPS, mail and domains, all in one place.">
 <title>Sean's Nav</title>
 <script>
-  // 三个主题：pond（锦鲤池塘，默认）/ light（极简）/ inkgold（墨金）。
+  // 三个主题：pond（锦鲤池塘，默认）/ mist（雾蓝）/ inkgold（墨金），各自独立。
   // 先按记住的主题上色，避免切换主题时闪一下默认页（和 XiaoWork Nav 同一个键 xn-theme）。
-  // 旧值 dark 映射到墨金，light / pond 直接可用，未知值一律落到 pond。
+  // 旧值 dark 映射到墨金，旧值 light / morning 映射到雾蓝，未知值一律落到 pond。
   try {
     var stored = localStorage.getItem('xn-theme');
     if (stored === 'dark') stored = 'inkgold';
-    if (stored !== 'light' && stored !== 'inkgold' && stored !== 'pond') stored = 'pond';
+    if (stored === 'light' || stored === 'morning') stored = 'mist';
+    if (stored !== 'mist' && stored !== 'inkgold' && stored !== 'pond') stored = 'pond';
     document.documentElement.dataset.theme = stored;
   } catch (e) { document.documentElement.dataset.theme = 'pond'; }
 </script>
@@ -43,7 +44,7 @@
         </div>
         <select class="theme-picker__select" id="theme-picker" aria-label="切换视觉主题">
           <option value="pond">🐟 锦鲤池塘</option>
-          <option value="light">🤍 极简</option>
+          <option value="mist">🌊 雾蓝</option>
           <option value="inkgold">🌑 墨金</option>
         </select>
         <span id="adminbar"></span>
