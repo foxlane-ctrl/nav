@@ -4,17 +4,17 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <meta name="theme-color" content="#1a1917">
-<meta name="description" content="我的导航 — 常用站点、测速、AI、VPS、邮箱，一处直达。">
-<title>我的导航</title>
+<meta name="description" content="Sean's Nav — AI, daily sites, speed tests, VPS, mail and domains, all in one place.">
+<title>Sean's Nav</title>
 <script>
-  // 先按记住的主题上色，避免切换主题时闪一下默认页（和 XiaoWork Nav 同一个键 xn-theme）
+  // 三个主题：pond（锦鲤池塘，默认）/ light（极简）/ inkgold（墨金）。
+  // 先按记住的主题上色，避免切换主题时闪一下默认页（和 XiaoWork Nav 同一个键 xn-theme）。
+  // 旧值 dark 映射到墨金，light / pond 直接可用，未知值一律落到 pond。
   try {
     var stored = localStorage.getItem('xn-theme');
-    if (stored === 'light' || stored === 'dark' || stored === 'pond') {
-      document.documentElement.dataset.theme = stored;
-    } else {
-      document.documentElement.dataset.theme = 'pond';
-    }
+    if (stored === 'dark') stored = 'inkgold';
+    if (stored !== 'light' && stored !== 'inkgold' && stored !== 'pond') stored = 'pond';
+    document.documentElement.dataset.theme = stored;
   } catch (e) { document.documentElement.dataset.theme = 'pond'; }
 </script>
 <link rel="stylesheet" href="/style.css">
@@ -24,7 +24,7 @@
 <div id="app" class="shell">
   <aside class="rail" id="rail" aria-label="分类导航">
     <div class="rail__brand">
-      <a class="brand" href="/"><span class="brand__mark">我</span><span class="brand__title">我的导航</span></a>
+      <a class="brand" href="/"><span class="brand__mark">S</span><span class="brand__title">Sean's Nav</span></a>
     </div>
     <div class="rail__head">
       <span class="rail__title">分类</span>
@@ -35,16 +35,16 @@
 
   <div class="shell__main">
     <div class="shell__topbar">
-      <a class="brand shell__brand" href="/"><span class="brand__mark">我</span><span class="brand__title">我的导航</span></a>
+      <a class="brand shell__brand" href="/"><span class="brand__mark">S</span><span class="brand__title">Sean's Nav</span></a>
       <div class="header-actions">
         <div class="layout-switch" role="group" aria-label="导航布局">
           <button type="button" class="layout-switch__item is-active" id="layout-scroll" title="滚动模式：所有分类纵向排列，PC 端带左侧分类栏" aria-pressed="true"><span aria-hidden="true">☰</span><span class="layout-switch__label">滚动模式</span></button>
           <button type="button" class="layout-switch__item" id="layout-tabs" title="标签模式：顶部分类标签，一次只看一个分类" aria-pressed="false"><span aria-hidden="true">▤</span><span class="layout-switch__label">标签模式</span></button>
         </div>
         <select class="theme-picker__select" id="theme-picker" aria-label="切换视觉主题">
-          <option value="dark">🌙 深色</option>
-          <option value="light">☀️ 浅色</option>
           <option value="pond">🐟 锦鲤池塘</option>
+          <option value="light">🤍 极简</option>
+          <option value="inkgold">🌑 墨金</option>
         </select>
         <span id="adminbar"></span>
       </div>
@@ -69,11 +69,19 @@
           </form>
         </div>
 
+        <section class="ai-hero" aria-label="AI quick links">
+          <span class="ai-hero__label">✦ AI</span>
+          <a class="ai-hero__item ai-hero__item--muse" href="https://muse.ai" target="_blank" rel="noopener noreferrer">Muse</a>
+          <a class="ai-hero__item" href="https://chat.openai.com" target="_blank" rel="noopener noreferrer">ChatGPT</a>
+          <a class="ai-hero__item" href="https://claude.ai" target="_blank" rel="noopener noreferrer">Claude</a>
+          <a class="ai-hero__item" href="https://gemini.google.com" target="_blank" rel="noopener noreferrer">Gemini</a>
+        </section>
+
         <nav class="chipbar" id="chipbar" aria-label="分类快速跳转"></nav>
         <div class="tabs" id="tabs" hidden></div>
         <div id="search-results" hidden></div>
         <div id="sections"></div>
-        <p class="foot">我的导航 · Go 后端 + 前端 · 登录管理员后可直接加链接</p>
+        <p class="foot">Sean's Nav · Go backend + frontend · Log in as admin to add links</p>
       </div>
     </div>
   </div>

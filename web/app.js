@@ -1,7 +1,8 @@
-// 我的导航 — 前端：从 Go API (/api/bookmarks) 拉分类和链接并渲染。
+// Sean's Nav — 前端：从 Go API (/api/bookmarks) 拉分类和链接并渲染。
 // 布局与行为仿 XiaoWork Nav（2026-11-08 从 nav.xiaoworks.com 实测）：
 // 左侧分类栏（PC）/ 顶部横条（手机）、时钟、搜索、滚动模式 / 标签模式、
-// 三种主题（深色 / 浅色 / 锦鲤池塘，默认池塘）、米色方块 + 下方名字。
+// 三个主题：锦鲤池塘（默认，像素大锦鲤）、极简（干净白底）、墨金（深墨底 + 暖金），
+// 米色方块 + 下方名字。主题选择器在顶栏，存在 localStorage 的 xn-theme。
 // 图标数据见 iconmap.js（从原站公开 API 提取，含原站排序）。
 // 未登录只能看；登录管理员后可加/改/删链接和分类。
 
@@ -29,10 +30,21 @@ function esc(s) {
 function catIcon(name) { return CAT_ICONS[name] || '📁'; }
 
 // ---------- 主题 ----------
+// 三个主题：pond（锦鲤池塘，默认）、light（极简）、inkgold（墨金）。
+// 旧值 dark 映射到墨金；未知值落到 pond。锦鲤只在池塘主题下运行。
 var THEME_KEY = 'xn-theme';
+var THEME_COLORS = { pond: '#1a1917', light: '#f5f5f7', inkgold: '#0f0e0c' };
+var THEME_LABELS = { pond: '🐟 锦鲤池塘', light: '🤍 极简', inkgold: '🌑 墨金' };
+function normalizeTheme(t) {
+  if (t === 'dark') t = 'inkgold';
+  if (t !== 'light' && t !== 'inkgold' && t !== 'pond') t = 'pond';
+  return t;
+}
 function applyTheme(t) {
-  if (t !== 'light' && t !== 'dark' && t !== 'pond') t = 'pond';
+  t = normalizeTheme(t);
   document.documentElement.dataset.theme = t;
+  var meta = document.querySelector('meta[name="theme-color"]');
+  if (meta) meta.setAttribute('content', THEME_COLORS[t]);
   var sel = $('theme-picker');
   if (sel) sel.value = t;
   try { localStorage.setItem(THEME_KEY, t); } catch (e) {}
@@ -40,13 +52,13 @@ function applyTheme(t) {
   pondEnabled = (t === 'pond');
 }
 function updateThemeLabels() {
-  var small = window.matchMedia('(max-width: 700px)').matches;
   var sel = $('theme-picker');
   if (!sel) return;
-  var opts = sel.options;
-  opts[0].textContent = small ? '深色' : '🌙 深色';
-  opts[1].textContent = small ? '浅色' : '☀️ 浅色';
-  opts[2].textContent = small ? '池塘' : '🐟 锦鲤池塘';
+  var small = window.matchMedia('(max-width: 700px)').matches;
+  for (var i = 0; i < sel.options.length; i++) {
+    var v = sel.options[i].value;
+    sel.options[i].textContent = small ? THEME_LABELS[v].replace(/^[^\s]+\s/, '') : THEME_LABELS[v];
+  }
 }
 window.matchMedia('(max-width: 700px)').addEventListener('change', updateThemeLabels);
 $('theme-picker').addEventListener('change', function (e) { applyTheme(e.target.value); });
@@ -87,7 +99,7 @@ tick(); setInterval(tick, 1000);
 
 // ---------- 锦鲤池塘：像素大锦鲤 ----------
 // 原站（nav.xiaoworks.com）实测：AsciiPondBackground，配置是
-//   species: [{ type: 'koi', count: 宽屏 4 / 手机 3, young: 0 }], theme: 'dark', fixed
+//   species: [{ type: 'koi', count: 宽屏 4 / 手机 3, young: 0 }], theme: 'dark'（原站配置，仅作参考）
 //   palette: page [26,25,23], bg [26,25,33]
 // 鱼本身（ascii-pond 的 koi.js）：20 节脊柱，体长 baseLength = clamp(min(宽,高)*0.5, 170, 420)px，
 //   成年鱼取 0.6–1.0 倍，即手机约 120–195px、桌面约 250–420px —— 是大鱼，不是小图标；
@@ -553,7 +565,6 @@ window.addEventListener('scroll', function () {
   if (atBottom) idx = secs.length - 1;
   if (idx >= 0) setActive(secs[idx].dataset.categoryId);
 }, { passive: true });
-window.addEventListener('resize', function () { updateThemeLabels(); });
 
 function renderSections() {
   var wrap = $('sections');
@@ -750,6 +761,12 @@ function openModal(title, bodyHtml, mode, id) {
 }
 function closeModal() { $('modal').classList.remove('open'); }
 $('modal-cancel').onclick = closeModal;
+document.addEventListener('keydown', function (e) {
+  if (e.key === 'Escape' && $('modal').classList.contains('open')) closeModal();
+});
+$('modal-body').addEventListener('keydown', function (e) {
+  if (e.key === 'Enter' && e.target.tagName === 'INPUT') { e.preventDefault(); $('modal-ok').click(); }
+});
 $('modal').addEventListener('click', function (e) { if (e.target === $('modal')) closeModal(); });
 
 function openLogin() {
@@ -802,10 +819,7 @@ $('modal-ok').onclick = async function () {
 // ---------- 启动 ----------
 (function initTheme() {
   var t = 'pond';
-  try {
-    var s = localStorage.getItem(THEME_KEY);
-    if (s === 'light' || s === 'dark' || s === 'pond') t = s;
-  } catch (e) {}
+  try { var s = localStorage.getItem(THEME_KEY); if (s) t = s; } catch (e) {}
   applyTheme(t);
 })();
 setLayout(layout);
