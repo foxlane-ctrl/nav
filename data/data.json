@@ -1,0 +1,717 @@
+{
+  "categories": [
+    {
+      "id": "daily",
+      "name": "Daily",
+      "order": 1
+    },
+    {
+      "id": "speedtest",
+      "name": "SpeedTest",
+      "order": 2
+    },
+    {
+      "id": "common",
+      "name": "常用",
+      "order": 3
+    },
+    {
+      "id": "ipdns",
+      "name": "IP&DNS",
+      "order": 4
+    },
+    {
+      "id": "ai",
+      "name": "AI & 智能",
+      "order": 5
+    },
+    {
+      "id": "vps",
+      "name": "VPS/云服务器",
+      "order": 6
+    },
+    {
+      "id": "mail",
+      "name": "邮箱",
+      "order": 7
+    },
+    {
+      "id": "domain",
+      "name": "域名",
+      "order": 8
+    },
+    {
+      "id": "other",
+      "name": "其他导航",
+      "order": 9
+    }
+  ],
+  "bookmarks": [
+    {
+      "id": "f001",
+      "categoryId": "daily",
+      "name": "博客",
+      "url": "https://blog.xiaoworks.com/"
+    },
+    {
+      "id": "f002",
+      "categoryId": "daily",
+      "name": "个人主页",
+      "url": "https://xiaoworks.com/"
+    },
+    {
+      "id": "f003",
+      "categoryId": "daily",
+      "name": "NodeSeek",
+      "url": "https://www.nodeseek.com/"
+    },
+    {
+      "id": "f004",
+      "categoryId": "daily",
+      "name": "烧饼论坛",
+      "url": "https://sb.sb"
+    },
+    {
+      "id": "f005",
+      "categoryId": "daily",
+      "name": "cloudflare",
+      "url": "https://dash.cloudflare.com/"
+    },
+    {
+      "id": "f006",
+      "categoryId": "daily",
+      "name": "ITDOG",
+      "url": "https://www.itdog.cn/tcping"
+    },
+    {
+      "id": "f007",
+      "categoryId": "daily",
+      "name": "优选IP",
+      "url": "https://cf.090227.xyz/"
+    },
+    {
+      "id": "f008",
+      "categoryId": "daily",
+      "name": "流量消耗器",
+      "url": "https://shua.leyz.top/"
+    },
+    {
+      "id": "f009",
+      "categoryId": "daily",
+      "name": "大文件下载",
+      "url": "https://ash-speed.hetzner.com/"
+    },
+    {
+      "id": "f010",
+      "categoryId": "daily",
+      "name": "komari探针",
+      "url": "https://komari.xiaoworks.com/"
+    },
+    {
+      "id": "f011",
+      "categoryId": "daily",
+      "name": "tcp调优",
+      "url": "https://www.omnitt.com/"
+    },
+    {
+      "id": "f012",
+      "categoryId": "daily",
+      "name": "节点一键脚本",
+      "url": "https://yonggekkk.github.io/argosbx/"
+    },
+    {
+      "id": "f013",
+      "categoryId": "daily",
+      "name": "肥羊订阅转换",
+      "url": "https://suburl.v1.mk/"
+    },
+    {
+      "id": "f014",
+      "categoryId": "daily",
+      "name": "订阅转换",
+      "url": "https://acl4ssr-sub.github.io/"
+    },
+    {
+      "id": "f015",
+      "categoryId": "daily",
+      "name": "各地延迟域名",
+      "url": "https://lf3-ips.zstaticcdn.com/"
+    },
+    {
+      "id": "f016",
+      "categoryId": "daily",
+      "name": "免费图床",
+      "url": "https://mjj.today/"
+    },
+    {
+      "id": "f017",
+      "categoryId": "daily",
+      "name": "剩余价值计算器",
+      "url": "https://www.idcvm.com/calculator"
+    },
+    {
+      "id": "f018",
+      "categoryId": "daily",
+      "name": "地址生成器",
+      "url": "https://address.333186.xyz"
+    },
+    {
+      "id": "f019",
+      "categoryId": "daily",
+      "name": "极简探针",
+      "url": "https://jijian.xiaoworks.com"
+    },
+    {
+      "id": "f020",
+      "categoryId": "speedtest",
+      "name": "speedtest",
+      "url": "https://www.speedtest.net/"
+    },
+    {
+      "id": "f021",
+      "categoryId": "speedtest",
+      "name": "谷歌测速",
+      "url": "https://fiber.google.com/speedtest/"
+    },
+    {
+      "id": "f022",
+      "categoryId": "speedtest",
+      "name": "Fast",
+      "url": "https://fast.com/"
+    },
+    {
+      "id": "f023",
+      "categoryId": "speedtest",
+      "name": "cf测速",
+      "url": "https://speed.cloudflare.com"
+    },
+    {
+      "id": "f024",
+      "categoryId": "speedtest",
+      "name": "LibreSpeed",
+      "url": "https://librespeed.org/"
+    },
+    {
+      "id": "f025",
+      "categoryId": "speedtest",
+      "name": "Measurementlab",
+      "url": "https://speed.measurementlab.net/"
+    },
+    {
+      "id": "f026",
+      "categoryId": "speedtest",
+      "name": "IP+测速",
+      "url": "https://ipipai.com/"
+    },
+    {
+      "id": "f027",
+      "categoryId": "speedtest",
+      "name": "speedtest单线程",
+      "url": "https://single.speedtest.net/"
+    },
+    {
+      "id": "f028",
+      "categoryId": "common",
+      "name": "YouTube",
+      "url": "https://www.youtube.com"
+    },
+    {
+      "id": "f029",
+      "categoryId": "common",
+      "name": "GitHub",
+      "url": "https://github.com/"
+    },
+    {
+      "id": "f030",
+      "categoryId": "common",
+      "name": "telegram",
+      "url": "https://web.telegram.org/a/"
+    },
+    {
+      "id": "f031",
+      "categoryId": "common",
+      "name": "Netflix",
+      "url": "https://www.netflix.com"
+    },
+    {
+      "id": "f032",
+      "categoryId": "common",
+      "name": "Spotify",
+      "url": "https://open.spotify.com"
+    },
+    {
+      "id": "f033",
+      "categoryId": "common",
+      "name": "Bilibili",
+      "url": "https://www.bilibili.com"
+    },
+    {
+      "id": "f034",
+      "categoryId": "common",
+      "name": "迪士尼+",
+      "url": "https://www.disneyplus.com/"
+    },
+    {
+      "id": "f035",
+      "categoryId": "ipdns",
+      "name": "IP138",
+      "url": "https://www.ip138.com"
+    },
+    {
+      "id": "f036",
+      "categoryId": "ipdns",
+      "name": "IPinfo",
+      "url": "https://ipinfo.io"
+    },
+    {
+      "id": "f037",
+      "categoryId": "ipdns",
+      "name": "ping0",
+      "url": "http://ping0.cc/"
+    },
+    {
+      "id": "f038",
+      "categoryId": "ipdns",
+      "name": "iping",
+      "url": "https://www.iping.cc/"
+    },
+    {
+      "id": "f039",
+      "categoryId": "ipdns",
+      "name": "ippure",
+      "url": "https://ippure.com/"
+    },
+    {
+      "id": "f040",
+      "categoryId": "ipdns",
+      "name": "Scamalytics",
+      "url": "https://scamalytics.com/ip"
+    },
+    {
+      "id": "f041",
+      "categoryId": "ipdns",
+      "name": "IPLEAK",
+      "url": "https://ipleak.net/"
+    },
+    {
+      "id": "f042",
+      "categoryId": "ipdns",
+      "name": "DNSLEAKTEST",
+      "url": "https://www.dnsleaktest.com/"
+    },
+    {
+      "id": "f043",
+      "categoryId": "ipdns",
+      "name": "BrowserLeaks",
+      "url": "https://browserleaks.com/dns"
+    },
+    {
+      "id": "f044",
+      "categoryId": "ipdns",
+      "name": "DNSCheck",
+      "url": "https://dnscheck.tools/"
+    },
+    {
+      "id": "f045",
+      "categoryId": "ipdns",
+      "name": "IP 检测",
+      "url": "https://www.ipjiance.com/"
+    },
+    {
+      "id": "f046",
+      "categoryId": "ipdns",
+      "name": "iplark",
+      "url": "https://iplark.com"
+    },
+    {
+      "id": "f047",
+      "categoryId": "ipdns",
+      "name": "IP分流检测",
+      "url": "https://ip.skk.moe/split-tunnel"
+    },
+    {
+      "id": "f048",
+      "categoryId": "ipdns",
+      "name": "IPsuper",
+      "url": "https://ipsuper.com/"
+    },
+    {
+      "id": "f049",
+      "categoryId": "ai",
+      "name": "ChatGPT",
+      "url": "https://chat.openai.com"
+    },
+    {
+      "id": "f050",
+      "categoryId": "ai",
+      "name": "Gemini",
+      "url": "https://gemini.google.com"
+    },
+    {
+      "id": "f051",
+      "categoryId": "ai",
+      "name": "Claude",
+      "url": "https://claude.ai"
+    },
+    {
+      "id": "f052",
+      "categoryId": "ai",
+      "name": "Midjourney",
+      "url": "https://www.midjourney.com"
+    },
+    {
+      "id": "f053",
+      "categoryId": "ai",
+      "name": "DeepSeek",
+      "url": "https://www.deepseek.com/"
+    },
+    {
+      "id": "f054",
+      "categoryId": "ai",
+      "name": "通义千问",
+      "url": "https://chat.qwen.ai/"
+    },
+    {
+      "id": "f055",
+      "categoryId": "ai",
+      "name": "kimi",
+      "url": "https://www.kimi.com/"
+    },
+    {
+      "id": "f056",
+      "categoryId": "ai",
+      "name": "Manus",
+      "url": "https://manus.im/"
+    },
+    {
+      "id": "f057",
+      "categoryId": "ai",
+      "name": "Grok",
+      "url": "https://grok.com/"
+    },
+    {
+      "id": "f058",
+      "categoryId": "ai",
+      "name": "Cursor",
+      "url": "https://cursor.com/"
+    },
+    {
+      "id": "f059",
+      "categoryId": "vps",
+      "name": "datawave",
+      "url": "https://datawave.sh/console?affId=258"
+    },
+    {
+      "id": "f060",
+      "categoryId": "vps",
+      "name": "Berohost",
+      "url": "https://bero-host.de"
+    },
+    {
+      "id": "f061",
+      "categoryId": "vps",
+      "name": "DMIT(大妈)",
+      "url": "https://www.dmit.io/aff.php?aff=18305"
+    },
+    {
+      "id": "f062",
+      "categoryId": "vps",
+      "name": "搬瓦工",
+      "url": "https://bandwagonhost.com/aff.php?aff=81538"
+    },
+    {
+      "id": "f063",
+      "categoryId": "vps",
+      "name": "vmiss",
+      "url": "https://app.vmiss.com/aff.php?aff=4958"
+    },
+    {
+      "id": "f064",
+      "categoryId": "vps",
+      "name": "Vmrack",
+      "url": "https://www.vmrack.net?ref_code=5ipQZuJbuUs"
+    },
+    {
+      "id": "f065",
+      "categoryId": "vps",
+      "name": "bitsflow",
+      "url": "https://ccp.bitsflow.cloud/order/forms/a/MjMzNQ=="
+    },
+    {
+      "id": "f066",
+      "categoryId": "vps",
+      "name": "nosla",
+      "url": "https://ccp.nosla.cloud/order/forms/a/MTcyMw=="
+    },
+    {
+      "id": "f067",
+      "categoryId": "vps",
+      "name": "Jtti",
+      "url": "https://user.jtti.cc/"
+    },
+    {
+      "id": "f068",
+      "categoryId": "vps",
+      "name": "Akile",
+      "url": "https://akile.ai/register?aff_code=92ae775a-9a5e-43fb-b1c3-9d73fd6b5b70"
+    },
+    {
+      "id": "f069",
+      "categoryId": "vps",
+      "name": "ReckNerd",
+      "url": "https://my.racknerd.com/aff.php?aff=19488"
+    },
+    {
+      "id": "f070",
+      "categoryId": "vps",
+      "name": "谷歌云",
+      "url": "https://cloud.google.com/"
+    },
+    {
+      "id": "f071",
+      "categoryId": "vps",
+      "name": "甲骨文云",
+      "url": "https://www.oracle.com/"
+    },
+    {
+      "id": "f072",
+      "categoryId": "vps",
+      "name": "亚马逊云",
+      "url": "https://aws.amazon.com/"
+    },
+    {
+      "id": "f073",
+      "categoryId": "vps",
+      "name": "ColoCrossing",
+      "url": "https://cloud.colocrossing.com/aff.php?aff=1674"
+    },
+    {
+      "id": "f074",
+      "categoryId": "vps",
+      "name": "gomami(狗妈)",
+      "url": "https://gomami.io/aff.php?aff=507"
+    },
+    {
+      "id": "f075",
+      "categoryId": "vps",
+      "name": "Hosthatch",
+      "url": "https://cloud.hosthatch.com/a/5425"
+    },
+    {
+      "id": "f076",
+      "categoryId": "vps",
+      "name": "Zouter",
+      "url": "https://www.zouter.io/"
+    },
+    {
+      "id": "f077",
+      "categoryId": "vps",
+      "name": "Evoxt",
+      "url": "https://console.evoxt.com/"
+    },
+    {
+      "id": "f078",
+      "categoryId": "vps",
+      "name": "华纳云",
+      "url": "https://www.hncloud.com/"
+    },
+    {
+      "id": "f079",
+      "categoryId": "vps",
+      "name": "虫网",
+      "url": "https://bug.pw/"
+    },
+    {
+      "id": "f080",
+      "categoryId": "vps",
+      "name": "面包云",
+      "url": "https://breadcloud.io/"
+    },
+    {
+      "id": "f081",
+      "categoryId": "vps",
+      "name": "阿里云",
+      "url": "https://www.aliyun.com"
+    },
+    {
+      "id": "f082",
+      "categoryId": "vps",
+      "name": "腾讯云",
+      "url": "https://cloud.tencent.com"
+    },
+    {
+      "id": "f083",
+      "categoryId": "vps",
+      "name": "华为云",
+      "url": "https://activity.huaweicloud.com/"
+    },
+    {
+      "id": "f084",
+      "categoryId": "vps",
+      "name": "莱卡云",
+      "url": "https://www.lcayun.com/"
+    },
+    {
+      "id": "f085",
+      "categoryId": "vps",
+      "name": "优刻得",
+      "url": "https://www.ucloud.cn/"
+    },
+    {
+      "id": "f086",
+      "categoryId": "vps",
+      "name": "HytronVPS（海创）",
+      "url": "https://hyvps.hytron.io/register?invite=E74LTcAajdVg"
+    },
+    {
+      "id": "f087",
+      "categoryId": "mail",
+      "name": "Gmail",
+      "url": "https://mail.google.com"
+    },
+    {
+      "id": "f088",
+      "categoryId": "mail",
+      "name": "Outlook",
+      "url": "https://outlook.live.com"
+    },
+    {
+      "id": "f089",
+      "categoryId": "mail",
+      "name": "protonmail",
+      "url": "https://mail.proton.me/u/1/inbox"
+    },
+    {
+      "id": "f090",
+      "categoryId": "mail",
+      "name": "QQ邮箱",
+      "url": "https://wx.mail.qq.com/"
+    },
+    {
+      "id": "f091",
+      "categoryId": "mail",
+      "name": "88完美邮箱",
+      "url": "https://mail.88.com/mail/#/home"
+    },
+    {
+      "id": "f092",
+      "categoryId": "mail",
+      "name": "网易邮箱",
+      "url": "https://mail.163.com/"
+    },
+    {
+      "id": "f093",
+      "categoryId": "mail",
+      "name": "Yahoo邮箱",
+      "url": "https://login.yahoo.com/"
+    },
+    {
+      "id": "f094",
+      "categoryId": "mail",
+      "name": "临时edu邮箱",
+      "url": "https://tempmail.edu.kg/"
+    },
+    {
+      "id": "f095",
+      "categoryId": "mail",
+      "name": "tempmail临时邮箱",
+      "url": "https://temp-mail.io/zh"
+    },
+    {
+      "id": "f096",
+      "categoryId": "mail",
+      "name": "临时邮箱",
+      "url": "https://22.do/zh"
+    },
+    {
+      "id": "f097",
+      "categoryId": "mail",
+      "name": "nodeseek邮箱",
+      "url": "https://seek.li/"
+    },
+    {
+      "id": "f098",
+      "categoryId": "mail",
+      "name": "原邮邮箱",
+      "url": "https://app.yuanyou.de"
+    },
+    {
+      "id": "f099",
+      "categoryId": "mail",
+      "name": "微软邮箱管理",
+      "url": "https://app.wyx66.com/"
+    },
+    {
+      "id": "f100",
+      "categoryId": "domain",
+      "name": "cloudflare",
+      "url": "https://dash.cloudflare.com/"
+    },
+    {
+      "id": "f101",
+      "categoryId": "domain",
+      "name": "GoDaddy",
+      "url": "https://www.godaddy.com"
+    },
+    {
+      "id": "f102",
+      "categoryId": "domain",
+      "name": "Namecheap",
+      "url": "https://www.namecheap.com"
+    },
+    {
+      "id": "f103",
+      "categoryId": "domain",
+      "name": "Nameslio",
+      "url": "https://www.namesilo.com/"
+    },
+    {
+      "id": "f104",
+      "categoryId": "domain",
+      "name": "Gname",
+      "url": "https://www.gname.com/"
+    },
+    {
+      "id": "f105",
+      "categoryId": "domain",
+      "name": "Onamae",
+      "url": "https://www.onamae.com/"
+    },
+    {
+      "id": "f106",
+      "categoryId": "domain",
+      "name": "porkhub",
+      "url": "https://porkbun.com/"
+    },
+    {
+      "id": "f107",
+      "categoryId": "domain",
+      "name": "marketing",
+      "url": "https://marketing.sav.com/zh"
+    },
+    {
+      "id": "f108",
+      "categoryId": "domain",
+      "name": "IONOS",
+      "url": "https://www.ionos.com/"
+    },
+    {
+      "id": "f109",
+      "categoryId": "domain",
+      "name": "Name",
+      "url": "https://www.name.com/"
+    },
+    {
+      "id": "f110",
+      "categoryId": "domain",
+      "name": "spaceship",
+      "url": "https://www.spaceship.com/"
+    },
+    {
+      "id": "f111",
+      "categoryId": "other",
+      "name": "科技lion导航站",
+      "url": "https://dh.kejilion.pro/"
+    }
+  ]
+}
