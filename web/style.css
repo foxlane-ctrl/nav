@@ -1,5 +1,5 @@
 /* Sean's Nav — 前端样式，仿 XiaoWork Nav（2026-11-08 从 nav.xiaoworks.com 实测）。
-   三个主题，各自独立、各有味道：锦鲤池塘（默认，黑底 #1a1917、橙色点缀、米色方块、像素大锦鲤）、
+   三个主题，各自独立、各有味道：锦鲤池塘（默认，暖色深水渐变 #171410、橙色点缀、米色方块、像素大锦鲤）、
    雾蓝（冷调浅蓝底 #dbeafe、深蓝点缀 #1d4ed8，蓝得清楚）和墨金（近黑暖墨底 #0a0908、亮金点缀 #f2c14e）。
    :root 的默认值就是池塘配色；雾蓝 / 墨金用 [data-theme] 覆盖全部变量。
    主题存在 localStorage 的 xn-theme，旧值 dark 映射到墨金，旧值 light / morning 映射到雾蓝，未知值落到池塘。
@@ -14,7 +14,7 @@
   --rail-inset:12px;--shell-topbar-h:64px;--shell-gutter:clamp(14px,2.4vw,40px);
 }
 :root{color-scheme:dark;
-  --bg-base:#1a1917;--bg-1:#1a1917;--bg-2:#1a1917;--bg-3:#1a1917;--bg-4:#1a1917;
+  --bg-base:#171410;--bg-1:#221c13;--bg-2:#1a1510;--bg-3:#131009;--bg-4:#0e0c08;
   --surface:rgba(34,33,32,.65);--surface-strong:rgba(42,41,40,.86);--surface-solid:#282723;
   --border:rgba(255,247,240,.14);--border-strong:rgba(255,247,240,.33);
   --text-main:#fff7f0;--text-sub:#d0c8c0;--text-dim:#9b958e;
@@ -60,7 +60,18 @@ body{margin:0;min-height:100vh;color:var(--text-main);
     radial-gradient(ellipse 820px 560px at 6% 104%,color-mix(in srgb,var(--bg-3) 72%,transparent),transparent 60%),
     linear-gradient(158deg,var(--bg-1) 0%,var(--bg-2) 42%,var(--bg-3) 74%,var(--bg-4) 100%);
   background-repeat:no-repeat;background-size:cover}
-[data-theme=pond] body{background:#1a1917}
+/* 池塘水面：暖色深水，有光从右上洒下来、左下一点青色水深，读得出是水不是平板黑 */
+[data-theme=pond] body{
+  background-color:#171410;
+  background-image:
+    radial-gradient(ellipse 1000px 620px at 85% -8%, rgba(255,196,120,.15), transparent 62%),
+    radial-gradient(ellipse 900px 640px at 8% 108%, rgba(64,120,110,.17), transparent 60%),
+    radial-gradient(ellipse 700px 420px at 50% 42%, rgba(230,168,120,.05), transparent 70%),
+    linear-gradient(168deg,#221c13 0%,#1a1510 46%,#12100b 78%,#0d0b08 100%);
+  background-repeat:no-repeat;background-size:cover}
+[data-theme=pond] .tile__label{text-shadow:0 1px 3px rgba(0,0,0,.8),0 0 14px rgba(0,0,0,.5)}
+[data-theme=pond] .clock__time{text-shadow:0 2px 20px rgba(0,0,0,.55)}
+[data-theme=pond] .clock__date,[data-theme=pond] .category__title{text-shadow:0 1px 6px rgba(0,0,0,.65)}
 [data-theme=mist] body{background:#dbeafe}
 [data-theme=inkgold] body{background:#0a0908}
 [data-theme=mist] canvas#pond-canvas,[data-theme=inkgold] canvas#pond-canvas{display:none}
@@ -151,7 +162,7 @@ button{font:inherit}
 .search__box{display:flex;align-items:center;gap:6px;padding:7px;border:1px solid var(--border);border-radius:999px;
   background:var(--surface-strong);box-shadow:0 20px 52px #0a0c2c42;backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px)}
 .search__box:focus-within{border-color:color-mix(in srgb,var(--accent) 60%,var(--border));box-shadow:0 0 0 4px color-mix(in srgb,var(--accent) 16%,transparent),var(--shadow-soft)}
-[data-theme=pond] .search__box{box-shadow:var(--shadow-soft)}
+[data-theme=pond] .search__box{box-shadow:0 0 0 1px rgba(230,168,120,.18),var(--shadow-soft)}
 .search__engine{min-height:40px;max-width:120px;padding:0 10px;border:0;border-radius:999px;background:var(--surface);color:var(--text-main);font-size:.85rem;font-weight:600;cursor:pointer}
 .search__input{flex:1;min-width:0;border:0;background:transparent;color:var(--text-main);font-size:1rem;outline:none}
 .search__input::placeholder{color:var(--text-dim)}
@@ -201,7 +212,6 @@ button{font:inherit}
 .tile__label{width:100%;font-size:.75rem;font-weight:500;line-height:1.33;letter-spacing:0;text-align:center;color:var(--text-main);
   display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;line-clamp:2;overflow:hidden;
   word-break:keep-all;overflow-wrap:break-word;min-height:2.6em}
-[data-theme=pond] .tile__label{text-shadow:0 1px 4px rgba(0,0,0,.6)}
 .tile .ops{position:absolute;top:-6px;right:-6px;display:flex;gap:2px;z-index:2}
 .tile .ops button{width:20px;height:20px;padding:0;border:1px solid var(--border);border-radius:6px;background:var(--surface-solid);color:var(--text-main);font-size:.65rem;cursor:pointer}
 .sec-del{margin-left:auto;border:1px solid var(--border);border-radius:8px;background:var(--surface);color:var(--text-dim);cursor:pointer;padding:2px 8px}

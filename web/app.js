@@ -33,7 +33,7 @@ function catIcon(name) { return CAT_ICONS[name] || '📁'; }
 // 三个主题：pond（锦鲤池塘，默认）、mist（雾蓝）、inkgold（墨金），各自独立。
 // 旧值 dark 映射到墨金，旧值 light / morning 映射到雾蓝；未知值落到 pond。锦鲤只在池塘主题下运行。
 var THEME_KEY = 'xn-theme';
-var THEME_COLORS = { pond: '#1a1917', mist: '#dbeafe', inkgold: '#0a0908' };
+var THEME_COLORS = { pond: '#171410', mist: '#dbeafe', inkgold: '#0a0908' };
 var THEME_LABELS = { pond: '🐟 锦鲤池塘', mist: '🌊 雾蓝', inkgold: '🌑 墨金' };
 function normalizeTheme(t) {
   if (t === 'dark') t = 'inkgold';
@@ -111,6 +111,7 @@ tick(); setInterval(tick, 1000);
 // 下面是自己写的同效果实现，不抄 vendor 代码：每条鱼先画在一张 36×16 的低分辨率像素画布上，
 // 再以 imageSmoothingEnabled=false 放大绘制，块状像素感是刻意保留的；身体按脊柱分段错位摆动，
 // 尾巴扇形摇摆；鱼在内容区下方自动变淡。只在池塘主题下运行，尊重 prefers-reduced-motion。
+// 优化版：鱼更鲜（加金色山吹、黑底昭和两个品种，红斑带橙色），桌面 5 条，尾迹涟漪扩散，3 片荷叶慢漂。
 var pondEnabled = false, pondRunning = false;
 (function pond() {
   var cv = $('pond-canvas'), ctx = cv.getContext('2d');
@@ -118,11 +119,12 @@ var pondEnabled = false, pondRunning = false;
   var reduced = window.matchMedia('(prefers-reduced-motion: reduce)');
   // 像素鱼：36 格长 × 16 格高，每格 1 个像素单元
   var PW = 36, PH = 16, MID = 8;
+  // 更鲜的配色：红更艳、加橙色和金色点缀，黑更深，鱼在水里一眼就能认出来
   var KOI = {
-    white: '#ece4da', red: '#e86038', black: '#5c5a6c',
-    fin: '#d6cec6', eye: '#14141a'
+    white: '#f2ead9', red: '#f2542a', orange: '#ff8a3d', gold: '#f2c14e',
+    black: '#4a4860', fin: '#d6cec6', eye: '#14141a'
   };
-  var VARIETIES = ['kohaku', 'kohaku', 'kohaku', 'sanke', 'sanke', 'tancho'];
+  var VARIETIES = ['kohaku', 'kohaku', 'sanke', 'sanke', 'tancho', 'yamabuki', 'showa'];
   var zones = [], zonesAt = 0;
 
   function resize() {
@@ -177,11 +179,25 @@ var pondEnabled = false, pondRunning = false;
     return 0.03 + 0.15 * Math.pow(t, 0.8);
   }
 
-  // 每条鱼的花纹：红斑 2–3 块（sanke 再加 1–2 块黑斑，tancho 只有头顶一点红）
+  // 每条鱼的花纹：红斑 2–3 块（sanke 再加 1–2 块黑斑，tancho 只有头顶一点红，
+  // yamabuki 通体金色大斑，showa 黑底配红白斑；红斑里约三成换成更亮的橙色）
   function makeMarkings(f) {
     var marks = [];
     if (f.variety === 'tancho') {
       marks.push({ s: 0.06, a: 0, rs: 0.05, ra: 0.45, c: 'red' });
+      return marks;
+    }
+    if (f.variety === 'yamabuki') {
+      marks.push({ s: 0.30, a: 0, rs: 0.16, ra: 0.75, c: 'gold' });
+      marks.push({ s: 0.58, a: 0.2, rs: 0.10, ra: 0.5, c: 'gold' });
+      marks.push({ s: 0.10, a: -0.2, rs: 0.07, ra: 0.45, c: 'gold' });
+      return marks;
+    }
+    if (f.variety === 'showa') {
+      marks.push({ s: 0.25, a: 0.1, rs: 0.10, ra: 0.55, c: 'red' });
+      marks.push({ s: 0.55, a: -0.2, rs: 0.08, ra: 0.45, c: 'red' });
+      marks.push({ s: 0.40, a: 0.5, rs: 0.08, ra: 0.4, c: 'white' });
+      marks.push({ s: 0.68, a: 0.3, rs: 0.06, ra: 0.35, c: 'white' });
       return marks;
     }
     var n = 2 + Math.floor(hash(f.id, 1) * 2);
@@ -191,7 +207,7 @@ var pondEnabled = false, pondRunning = false;
         a: (hash(f.id, 20 + i) - 0.5) * 1.1,
         rs: 0.06 + hash(f.id, 30 + i) * 0.07,
         ra: 0.35 + hash(f.id, 40 + i) * 0.35,
-        c: 'red'
+        c: hash(f.id, 60 + i) < 0.3 ? 'orange' : 'red'
       });
     }
     if (f.variety === 'sanke') {
@@ -220,7 +236,7 @@ var pondEnabled = false, pondRunning = false;
         // V 形缺口：尾巴末端中间镂空
         if (isTail && s > 0.92 && ady < (s - 0.92) * 22) continue;
         var across = hw > 0 ? dy / hw : 0;
-        var col = 'white';
+        var col = f.base || 'white';
         // 腹缘和尾柄永远留白，衬托花纹
         if (!(Math.abs(across) > 0.9 || s > 0.74)) {
           for (var m = 0; m < marks.length; m++) {
@@ -242,8 +258,8 @@ var pondEnabled = false, pondRunning = false;
     g.fillRect(12, MID + 5 + flap, 2, 1);
     g.fillRect(11, MID - 5 - flap, 3, 1);
     g.fillRect(12, MID - 6 - flap, 2, 1);
-    // 眼睛：头两侧各一颗深色像素
-    g.fillStyle = KOI.eye;
+    // 眼睛：头两侧各一颗像素（黑底鱼用浅色点，不然看不见）
+    g.fillStyle = (f.base === 'black') ? KOI.white : KOI.eye;
     g.fillRect(3, MID - 3, 1, 1);
     g.fillRect(3, MID + 2, 1, 1);
     return c;
@@ -262,12 +278,15 @@ var pondEnabled = false, pondRunning = false;
       y: Math.random() * H * 0.8 + H * 0.1,
       heading: Math.random() * Math.PI * 2,
       speed: 16 + Math.random() * 10,
+      curSpeed: 0,
       mood: 'cruise', moodUntil: 4 + Math.random() * 8,
       phase: Math.random() * Math.PI * 2,
       alpha: 0.9, targetAlpha: 0.9,
       sprite: null, spriteSwing: -1,
       trail: []
     };
+    f.base = f.variety === 'showa' ? 'black' : 'white';
+    f.curSpeed = f.speed;
     f.markings = makeMarkings(f);
     if (offscreen) {
       var edge = Math.floor(Math.random() * 4);
@@ -280,7 +299,7 @@ var pondEnabled = false, pondRunning = false;
   }
 
   var fish = [];
-  function wantCount() { return W < 700 ? 3 : 4; }
+  function wantCount() { return W < 700 ? 3 : 5; }
   function seed() {
     fish = [];
     var n = wantCount();
@@ -292,6 +311,48 @@ var pondEnabled = false, pondRunning = false;
     while (fish.length < n) fish.push(makeFish(fish.length + 1, true));
     while (fish.length > n) fish.pop();
   });
+
+  // 荷叶：3 片，固定位置附近极慢地漂，带缺口，其中一片上有一朵小花；内容区下方变淡
+  var pads = [
+    { fx: 0.14, fy: 0.22, r: 34, drift: 0, flower: false },
+    { fx: 0.82, fy: 0.68, r: 42, drift: 2, flower: true },
+    { fx: 0.58, fy: 0.88, r: 28, drift: 4, flower: false }
+  ];
+  function drawPads(now) {
+    var t = now / 1000;
+    pads.forEach(function (p) {
+      var x = p.fx * W + Math.sin(t * 0.05 + p.drift) * 12;
+      var y = p.fy * H + Math.cos(t * 0.04 + p.drift) * 8;
+      ctx.save();
+      ctx.globalAlpha = dimAt(x, y) ? 0.22 : 0.5;
+      var notch = 0.5 + p.drift * 0.4;
+      ctx.beginPath();
+      ctx.moveTo(x, y);
+      ctx.arc(x, y, p.r, notch, notch + Math.PI * 2 - 0.6);
+      ctx.closePath();
+      ctx.fillStyle = '#2e5d3a';
+      ctx.fill();
+      ctx.beginPath();
+      ctx.arc(x, y, p.r * 0.82, notch + 0.4, notch + Math.PI * 2 - 1.0);
+      ctx.strokeStyle = 'rgba(120,180,130,0.5)';
+      ctx.lineWidth = 1.5;
+      ctx.stroke();
+      if (p.flower) {
+        ctx.fillStyle = '#e8a0b4';
+        for (var i = 0; i < 5; i++) {
+          var an = (i / 5) * Math.PI * 2;
+          ctx.beginPath();
+          ctx.arc(x + Math.cos(an) * 5, y - p.r * 0.55 + Math.sin(an) * 5, 3.2, 0, Math.PI * 2);
+          ctx.fill();
+        }
+        ctx.fillStyle = '#f2c14e';
+        ctx.beginPath();
+        ctx.arc(x, y - p.r * 0.55, 2.6, 0, Math.PI * 2);
+        ctx.fill();
+      }
+      ctx.restore();
+    });
+  }
 
   function pickMood(f, now) {
     var r = Math.random();
@@ -323,8 +384,10 @@ var pondEnabled = false, pondRunning = false;
     while (diff < -Math.PI) diff += Math.PI * 2;
     f.heading += Math.max(-0.5 * dt, Math.min(0.5 * dt, diff));
     var v = f.speed * moodSpeed(f);
-    f.x += Math.cos(f.heading) * v * dt;
-    f.y += Math.sin(f.heading) * v * dt * 0.8;
+    // 速度平滑过渡：换心情时不突然加速/刹车，游起来更顺
+    f.curSpeed += (v - f.curSpeed) * Math.min(1, dt * 1.5);
+    f.x += Math.cos(f.heading) * f.curSpeed * dt;
+    f.y += Math.sin(f.heading) * f.curSpeed * dt * 0.8;
     // 游出边界就从对侧缓缓游回
     if (f.x < -f.length) f.x = W + f.length * 0.5;
     if (f.x > W + f.length) f.x = -f.length * 0.5;
@@ -335,12 +398,12 @@ var pondEnabled = false, pondRunning = false;
     var under = dimAt(f.x, f.y) || dimAt(f.x + Math.cos(f.heading) * f.length * 0.4, f.y + Math.sin(f.heading) * f.length * 0.4);
     f.targetAlpha = under ? 0.30 : 0.92;
     f.alpha += (f.targetAlpha - f.alpha) * Math.min(1, dt * 2);
-    // 尾迹：记录尾尖位置，画几颗淡出的像素水花
+    // 尾迹：水花一边淡出一边扩散，像涟漪一样散开
     var tx = f.x - Math.cos(f.heading) * f.length * 0.5;
     var ty = f.y - Math.sin(f.heading) * f.length * 0.5;
-    f.trail.push({ x: tx, y: ty, a: 0.14 });
-    if (f.trail.length > 10) f.trail.shift();
-    f.trail.forEach(function (p) { p.a *= 0.94; });
+    f.trail.push({ x: tx, y: ty, a: 0.16, r: 2 });
+    if (f.trail.length > 12) f.trail.shift();
+    f.trail.forEach(function (p) { p.a *= 0.93; p.r += 0.45; });
   }
 
   function drawFish(f, now) {
@@ -355,15 +418,23 @@ var pondEnabled = false, pondRunning = false;
     ctx.save();
     ctx.globalAlpha = Math.max(0, Math.min(1, f.alpha));
     ctx.imageSmoothingEnabled = false;
-    // 尾迹
+    // 尾迹涟漪：越往后越淡、越大
     f.trail.forEach(function (p) {
       if (p.a <= 0.01) return;
       ctx.globalAlpha = p.a * f.alpha;
       ctx.fillStyle = '#f3e2c7';
-      ctx.fillRect(p.x - 1, p.y - 1, 2, 2);
+      var s = Math.min(7, p.r);
+      ctx.fillRect(p.x - s / 2, p.y - s / 2, s, s);
     });
     ctx.globalAlpha = Math.max(0, Math.min(1, f.alpha));
-    ctx.translate(f.x, f.y);
+    // 鱼身下一点暖色柔光，鱼浮在水面上有层次；再加一点上下浮动，游得更活
+    var glow = ctx.createRadialGradient(f.x, f.y, 0, f.x, f.y, f.length * 0.55);
+    glow.addColorStop(0, 'rgba(255,214,150,0.10)');
+    glow.addColorStop(1, 'rgba(255,214,150,0)');
+    ctx.fillStyle = glow;
+    ctx.fillRect(f.x - f.length * 0.55, f.y - f.length * 0.55, f.length * 1.1, f.length * 1.1);
+    var bob = Math.sin(now / 1000 * 0.9 + f.phase) * 3;
+    ctx.translate(f.x, f.y + bob);
     ctx.rotate(f.heading);
     // 身体按脊柱分 8 段错位绘制：每段上下错开一点，整条鱼像在摆动一样游
     var slices = 8, sw = PW / slices;
@@ -380,6 +451,7 @@ var pondEnabled = false, pondRunning = false;
     var dt = Math.min(0.05, (now - lastT) / 1000 || 0.016);
     lastT = now;
     fish.forEach(function (f) { step(f, dt, now / 1000); });
+    drawPads(now);
     // 深的鱼先画（后画的在上层）
     fish.forEach(function (f) { drawFish(f, now); });
   }
@@ -395,6 +467,7 @@ var pondEnabled = false, pondRunning = false;
   function drawStatic() {
     ctx.clearRect(0, 0, W, H);
     var now = 1000;
+    drawPads(now);
     fish.forEach(function (f) { drawFish(f, now); });
   }
 
