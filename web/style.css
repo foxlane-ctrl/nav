@@ -160,16 +160,6 @@ button{font:inherit}
 .clock__date{margin-top:var(--space-1);color:var(--text-dim);font-size:.82rem;font-weight:500;letter-spacing:.02em}
 
 
-/* ---------- AI 快捷入口 ---------- */
-.ai-hero{display:flex;align-items:center;justify-content:center;flex-wrap:wrap;gap:8px;margin:var(--space-2) auto var(--space-3);padding:0 8px}
-.ai-hero__label{font-size:.82rem;font-weight:700;letter-spacing:.04em;color:var(--accent)}
-.ai-hero__item{display:inline-flex;align-items:center;min-height:36px;padding:0 16px;border:1px solid var(--border);
-  border-radius:999px;background:var(--surface-strong);color:var(--text-main);font-size:.88rem;font-weight:600;
-  text-decoration:none;transition:transform var(--transition),box-shadow var(--transition),border-color var(--transition);
-  backdrop-filter:blur(16px) saturate(160%);-webkit-backdrop-filter:blur(16px) saturate(160%);box-shadow:inset 0 1px 0 rgba(255,255,255,.25),var(--shadow-soft)}
-.ai-hero__item:hover{transform:translateY(-1px);border-color:var(--accent);box-shadow:var(--shadow-soft)}
-.ai-hero__item--muse{border-color:transparent;background:linear-gradient(135deg,var(--accent),var(--accent-2));color:var(--accent-contrast)}
-
 /* ---------- 搜索 ---------- */
 .search{width:min(100%,720px);margin:var(--space-2) auto var(--space-4)}
 .search__box{display:flex;align-items:center;gap:6px;padding:7px;border:1px solid var(--border);border-radius:999px;
@@ -358,7 +348,7 @@ body.list-view .tile__label{width:auto;min-height:0;text-align:left;font-size:.9
 [data-theme=mist] .clock__time{backdrop-filter:blur(20px) saturate(180%);-webkit-backdrop-filter:blur(20px) saturate(180%)}
 [data-theme=mist] .modal{background:rgba(255,255,255,.66);backdrop-filter:blur(32px) saturate(190%);-webkit-backdrop-filter:blur(32px) saturate(190%)}
 [data-theme=mist] .layout-switch,[data-theme=mist] .theme-picker__select,[data-theme=mist] .btn,
-[data-theme=mist] .ai-hero__item,[data-theme=mist] .chipbar__item,[data-theme=mist] .tabs__item,
+[data-theme=mist] .chipbar__item,[data-theme=mist] .tabs__item,
 [data-theme=mist] .category__icon,[data-theme=mist] .badge{
   backdrop-filter:blur(20px) saturate(180%);-webkit-backdrop-filter:blur(20px) saturate(180%);
   box-shadow:inset 0 1px 0 rgba(255,255,255,.55),var(--shadow-soft)}
