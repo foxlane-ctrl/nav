@@ -91,4 +91,4 @@ go vet ./...      # 检查代码
 
 ## 链接来源
 
-112 个链接里，108 个网址来自原站公开接口，没有自己编的网址；其余 4 条是 Sean 自己的：我的探针（https://komari.greystack.dev）、绿云 GreenCloud（https://greencloudvps.com/）、小秘书 V.PS（https://v.ps/）、RFC（https://rfchost.com/，官网已核实：地区含日本，套餐命名与他那台 RFC-JP2-CO-Mirco 的 CO 系列一致）。图标能从原站下载的都下载到了 `web/icons/`；只有 NodeSeek 的图标原站返回 403，下不到，页面上会自动用它的源站 favicon 代替，实在没有就只显示首字母。
+112 个链接里，108 个网址来自原站公开接口，没有自己编的网址；其余 4 条是 Sean 自己的：我的探针（https://komari.greystack.dev）、绿云 GreenCloud（https://greencloudvps.com/）、小秘书 V.PS（https://v.ps/）、RFC（https://my.rfchost.com/clientarea.php?action=productdetails&id=30545，Sean 给的他那台 RFC-JP2-CO-Mirco 的产品页；之前写错成官网首页 https://rfchost.com/，2026-11-08 已更正）。图标能从原站下载的都下载到了 `web/icons/`；只有 NodeSeek 的图标原站返回 403，下不到，页面上会自动用它的源站 favicon 代替，实在没有就只显示首字母。

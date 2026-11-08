@@ -97,6 +97,7 @@ docker build -t navsite:latest .
 # 再加了 3 条自己的 VPS：绿云 GreenCloud、V.PS、RFC）。
 # (e) 110 条的 Sean's Nav 版（有自己的探针，但还没有 3 条新 VPS）也要换成 112 条。
 # (f) 113 条的 Sean's Nav 版（还有朋友的博客 blog.xiaoworks.com）也要换成 112 条。
+# (g) 112 条的 Sean's Nav 版（RFC 链接还是错的官网首页 https://rfchost.com/）也要换成新版（RFC 改成 Sean 给的产品页）。
 # 自己加过/改过链接的数据（条数对不上、也没有上述标记）绝不动。
 if [ -f data/data.json ] && docker volume inspect navsite-data >/dev/null 2>&1; then
   OLD_COUNT=$(docker run --rm -v navsite-data:/data alpine sh -c 'grep -c "categoryId" /data/data.json 2>/dev/null || echo 0')
@@ -117,6 +118,9 @@ if [ -f data/data.json ] && docker volume inspect navsite-data >/dev/null 2>&1; 
     docker run --rm -v navsite-data:/data -v "$PWD/data:/seed:ro" alpine cp /seed/data.json /data/data.json
   elif [ "$OLD_COUNT" = "113" ] && docker run --rm -v navsite-data:/data alpine sh -c 'grep -q "komari.greystack.dev" /data/data.json 2>/dev/null' && docker run --rm -v navsite-data:/data alpine sh -c 'grep -q "blog.xiaoworks.com" /data/data.json 2>/dev/null'; then
     echo "检测到 113 个链接数据（Sean's Nav 旧版，还带朋友的博客），升级到新版（112 个链接）…"
+    docker run --rm -v navsite-data:/data -v "$PWD/data:/seed:ro" alpine cp /seed/data.json /data/data.json
+  elif [ "$OLD_COUNT" = "112" ] && docker run --rm -v navsite-data:/data alpine sh -c 'grep -q "://rfchost.com/" /data/data.json 2>/dev/null'; then
+    echo "检测到 112 个链接数据（Sean's Nav 旧版，RFC 链接还是错的官网首页），升级到新版（RFC 改成产品页）…"
     docker run --rm -v navsite-data:/data -v "$PWD/data:/seed:ro" alpine cp /seed/data.json /data/data.json
   fi
 fi
