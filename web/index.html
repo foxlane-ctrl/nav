@@ -3,13 +3,16 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="我的导航 — 常用站点、测速、AI、VPS、邮箱，一处直达。">
 <title>我的导航</title>
 <link rel="stylesheet" href="/style.css">
 </head>
 <body>
+<div class="bg-glow" aria-hidden="true"></div>
 <div class="layout">
   <nav class="sidebar" id="sidebar">
-    <div class="logo">我的<span>导航</span></div>
+    <div class="logo"><span class="logo-mark">✦</span>我的<span>导航</span></div>
+    <p class="side-label">分类</p>
   </nav>
 
   <main class="main">
@@ -17,20 +20,23 @@
       <button id="btn-login">管理员登录</button>
     </div>
 
-    <div class="clock">
-      <div class="time" id="clock">--:--:--</div>
-      <div class="date" id="date"></div>
-    </div>
+    <header class="hero">
+      <div class="clock">
+        <div class="time" id="clock">--:--:--</div>
+        <div class="date" id="date"></div>
+      </div>
 
-    <form class="search" action="https://www.google.com/search" method="get" target="_blank">
-      <select aria-label="搜索引擎" onchange="this.form.action=this.value">
-        <option value="https://www.google.com/search">Google</option>
-        <option value="https://www.bing.com/search">Bing</option>
-        <option value="https://www.baidu.com/s">百度</option>
-      </select>
-      <input type="text" name="q" placeholder="搜索站点，或回车用所选引擎搜索" autocomplete="off">
-      <button type="submit">搜索</button>
-    </form>
+      <form class="search" action="https://www.google.com/search" method="get" target="_blank">
+        <span class="search-icon" aria-hidden="true">⌕</span>
+        <input type="text" name="q" placeholder="搜索站点，或输入关键词回车搜索" autocomplete="off" aria-label="搜索">
+        <select aria-label="搜索引擎" onchange="this.form.action=this.value">
+          <option value="https://www.google.com/search">Google</option>
+          <option value="https://www.bing.com/search">Bing</option>
+          <option value="https://www.baidu.com/s">百度</option>
+        </select>
+        <button type="submit">搜索</button>
+      </form>
+    </header>
 
     <div id="sections"></div>
 

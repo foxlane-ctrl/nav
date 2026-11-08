@@ -2,7 +2,7 @@
 // 未登录只能看；登录管理员后可加/改/删链接和分类。
 
 var state = { categories: [], bookmarks: [], loggedIn: false };
-var colors = ['#f97316', '#0ea5e9', '#22c55e', '#eab308', '#a855f7', '#ec4899', '#14b8a6', '#6366f1'];
+var colors = ['#b7791f', '#0e7490', '#15803d', '#a16207', '#7e22ce', '#be185d', '#0f766e', '#4338ca'];
 
 function $(id) { return document.getElementById(id); }
 
@@ -46,6 +46,10 @@ function iconColor(name) {
 
 function esc(s) {
   return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+}
+
+function hostOf(url) {
+  try { return new URL(url).hostname.replace(/^www\./, ''); } catch (e) { return ''; }
 }
 
 function render() {
@@ -140,8 +144,15 @@ function tile(b) {
   a.target = '_blank';
   a.rel = 'noopener';
   var first = (b.name || '?').trim().charAt(0).toUpperCase();
-  a.innerHTML = '<span class="icon" style="background:' + iconColor(b.name) + '">' + esc(first) + '</span>' +
-    '<span class="name">' + esc(b.name) + '</span>';
+  var host = hostOf(b.url);
+  // 真实 favicon（Google 服务），加载失败时自动隐藏，只留首字母底色
+  var fav = host ? 'https://www.google.com/s2/favicons?domain=' + encodeURIComponent(host) + '&sz=128' : '';
+  a.innerHTML = '<span class="icon" style="background:' + iconColor(b.name) + '">' +
+    '<span class="letter">' + esc(first) + '</span>' +
+    (fav ? '<img src="' + esc(fav) + '" alt="" loading="lazy" onerror="this.style.display=\'none\'">' : '') +
+    '</span>' +
+    '<span class="name">' + esc(b.name) + '</span>' +
+    (host ? '<span class="domain">' + esc(host) + '</span>' : '');
   if (state.loggedIn) {
     var ops = document.createElement('span');
     ops.className = 'ops';
