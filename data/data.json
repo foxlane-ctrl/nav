@@ -1,13 +1,13 @@
 {
   "categories": [
     {
-      "id": "daily",
-      "name": "Daily",
+      "id": "ai",
+      "name": "AI & 智能",
       "order": 1
     },
     {
-      "id": "speedtest",
-      "name": "SpeedTest",
+      "id": "daily",
+      "name": "Daily",
       "order": 2
     },
     {
@@ -16,18 +16,18 @@
       "order": 3
     },
     {
-      "id": "ipdns",
-      "name": "IP&DNS",
+      "id": "vps",
+      "name": "VPS/云服务器",
       "order": 4
     },
     {
-      "id": "ai",
-      "name": "AI & 智能",
+      "id": "speedtest",
+      "name": "SpeedTest",
       "order": 5
     },
     {
-      "id": "vps",
-      "name": "VPS/云服务器",
+      "id": "ipdns",
+      "name": "IP&DNS",
       "order": 6
     },
     {
@@ -47,6 +47,12 @@
     }
   ],
   "bookmarks": [
+    {
+      "id": "s001",
+      "categoryId": "daily",
+      "name": "我的探针",
+      "url": "https://komari.greystack.dev"
+    },
     {
       "id": "f001",
       "categoryId": "daily",
@@ -102,12 +108,6 @@
       "url": "https://ash-speed.hetzner.com/"
     },
     {
-      "id": "f010",
-      "categoryId": "daily",
-      "name": "komari探针",
-      "url": "https://komari.xiaoworks.com/"
-    },
-    {
       "id": "f011",
       "categoryId": "daily",
       "name": "tcp调优",
@@ -154,12 +154,6 @@
       "categoryId": "daily",
       "name": "地址生成器",
       "url": "https://address.333186.xyz"
-    },
-    {
-      "id": "f019",
-      "categoryId": "daily",
-      "name": "极简探针",
-      "url": "https://jijian.xiaoworks.com"
     },
     {
       "id": "f020",
@@ -406,6 +400,24 @@
       "categoryId": "vps",
       "name": "Berohost",
       "url": "https://bero-host.de"
+    },
+    {
+      "id": "s002",
+      "categoryId": "vps",
+      "name": "绿云 GreenCloud",
+      "url": "https://greencloudvps.com/"
+    },
+    {
+      "id": "s003",
+      "categoryId": "vps",
+      "name": "小秘书 V.PS",
+      "url": "https://v.ps/"
+    },
+    {
+      "id": "s004",
+      "categoryId": "vps",
+      "name": "RFC",
+      "url": "https://rfchost.com/"
     },
     {
       "id": "f061",
