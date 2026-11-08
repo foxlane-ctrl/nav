@@ -2,60 +2,96 @@
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#1a1917">
 <meta name="description" content="我的导航 — 常用站点、测速、AI、VPS、邮箱，一处直达。">
 <title>我的导航</title>
+<script>
+  // 先按记住的主题上色，避免切换主题时闪一下默认页（和 XiaoWork Nav 同一个键 xn-theme）
+  try {
+    var stored = localStorage.getItem('xn-theme');
+    if (stored === 'light' || stored === 'dark' || stored === 'pond') {
+      document.documentElement.dataset.theme = stored;
+    } else {
+      document.documentElement.dataset.theme = 'pond';
+    }
+  } catch (e) { document.documentElement.dataset.theme = 'pond'; }
+</script>
 <link rel="stylesheet" href="/style.css">
 </head>
 <body>
-<div class="bg-glow" aria-hidden="true"></div>
-<div class="layout">
-  <nav class="sidebar" id="sidebar">
-    <div class="logo"><span class="logo-mark">✦</span>我的<span>导航</span></div>
-    <p class="side-label">分类</p>
-  </nav>
+<canvas id="pond-canvas" aria-hidden="true"></canvas>
+<div id="app" class="shell">
+  <aside class="rail" id="rail" aria-label="分类导航">
+    <div class="rail__brand">
+      <a class="brand" href="/"><span class="brand__mark">我</span><span class="brand__title">我的导航</span></a>
+    </div>
+    <div class="rail__head">
+      <span class="rail__title">分类</span>
+      <button type="button" class="rail__toggle" id="rail-toggle" title="折叠分类栏" aria-expanded="true"><span aria-hidden="true">«</span><span class="sr-only">折叠分类栏</span></button>
+    </div>
+    <nav class="rail__list" id="rail-list"></nav>
+  </aside>
 
-  <main class="main">
-    <div class="adminbar" id="adminbar">
-      <button id="btn-login">管理员登录</button>
+  <div class="shell__main">
+    <div class="shell__topbar">
+      <a class="brand shell__brand" href="/"><span class="brand__mark">我</span><span class="brand__title">我的导航</span></a>
+      <div class="header-actions">
+        <div class="layout-switch" role="group" aria-label="导航布局">
+          <button type="button" class="layout-switch__item is-active" id="layout-scroll" title="滚动模式：所有分类纵向排列，PC 端带左侧分类栏" aria-pressed="true"><span aria-hidden="true">☰</span><span class="layout-switch__label">滚动模式</span></button>
+          <button type="button" class="layout-switch__item" id="layout-tabs" title="标签模式：顶部分类标签，一次只看一个分类" aria-pressed="false"><span aria-hidden="true">▤</span><span class="layout-switch__label">标签模式</span></button>
+        </div>
+        <select class="theme-picker__select" id="theme-picker" aria-label="切换视觉主题">
+          <option value="dark">🌙 深色</option>
+          <option value="light">☀️ 浅色</option>
+          <option value="pond">🐟 锦鲤池塘</option>
+        </select>
+        <span id="adminbar"></span>
+      </div>
     </div>
 
-    <header class="hero">
-      <div class="clock">
-        <div class="time" id="clock">--:--:--</div>
-        <div class="date" id="date"></div>
+    <div class="shell__content">
+      <div class="page" id="page">
+        <section class="clock" aria-label="时间">
+          <div class="clock__time" id="clock-time">--:--:--</div>
+          <div class="clock__date" id="clock-date"></div>
+        </section>
+
+        <div class="search">
+          <form class="search__box" id="search-form" role="search">
+            <select class="search__engine" id="search-engine" aria-label="搜索引擎">
+              <option value="https://www.google.com/search?q={query}">Google</option>
+              <option value="https://www.bing.com/search?q={query}">Bing</option>
+              <option value="https://www.baidu.com/s?wd={query}">百度</option>
+            </select>
+            <input class="search__input" id="search-input" type="search" placeholder="搜索站点，或回车用所选引擎搜索" aria-label="搜索" autocomplete="off">
+            <button type="submit" class="btn btn--sm btn--primary">搜索</button>
+          </form>
+        </div>
+
+        <nav class="chipbar" id="chipbar" aria-label="分类快速跳转"></nav>
+        <div class="tabs" id="tabs" hidden></div>
+        <div id="search-results" hidden></div>
+        <div id="sections"></div>
+        <p class="foot">我的导航 · Go 后端 + 前端 · 登录管理员后可直接加链接</p>
       </div>
-
-      <form class="search" action="https://www.google.com/search" method="get" target="_blank">
-        <span class="search-icon" aria-hidden="true">⌕</span>
-        <input type="text" name="q" placeholder="搜索站点，或输入关键词回车搜索" autocomplete="off" aria-label="搜索">
-        <select aria-label="搜索引擎" onchange="this.form.action=this.value">
-          <option value="https://www.google.com/search">Google</option>
-          <option value="https://www.bing.com/search">Bing</option>
-          <option value="https://www.baidu.com/s">百度</option>
-        </select>
-        <button type="submit">搜索</button>
-      </form>
-    </header>
-
-    <div id="sections"></div>
-
-    <p class="foot">我的导航 · Go 后端 + 前端 · 登录管理员后可直接加链接</p>
-  </main>
-</div>
-
-<div class="modal" id="modal">
-  <div class="box">
-    <h3 id="modal-title">管理员登录</h3>
-    <div id="modal-body"></div>
-    <p class="err" id="modal-err"></p>
-    <div class="row">
-      <button id="modal-ok">确定</button>
-      <button class="ghost" id="modal-cancel">取消</button>
     </div>
   </div>
 </div>
 
+<div class="modal-wrap" id="modal">
+  <div class="modal">
+    <h3 id="modal-title">管理员登录</h3>
+    <div id="modal-body"></div>
+    <p class="err" id="modal-err"></p>
+    <div class="row">
+      <button class="btn btn--primary" id="modal-ok" type="button">确定</button>
+      <button class="btn" id="modal-cancel" type="button">取消</button>
+    </div>
+  </div>
+</div>
+
+<script src="/iconmap.js"></script>
 <script src="/app.js"></script>
 </body>
 </html>
